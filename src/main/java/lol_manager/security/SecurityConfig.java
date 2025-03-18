@@ -15,7 +15,11 @@ public class SecurityConfig {
 			auth.requestMatchers(
 				"/user/**",
 				"/champ/**",
-				"/champ-pool/**"
+				"/champ-pool/**",
+				"/team/**",
+				"/team-member/**",
+				"/team-comp/**",
+				"/champ-role/**"
 			)
 			.permitAll();
 			auth.anyRequest().authenticated();

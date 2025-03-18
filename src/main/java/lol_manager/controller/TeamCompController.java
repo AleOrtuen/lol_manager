@@ -13,29 +13,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lol_manager.dto.ResponseDTO;
-import lol_manager.dto.UserDTO;
-import lol_manager.service.UserService;
+import lol_manager.dto.TeamCompDTO;
+import lol_manager.service.TeamCompService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/team-comp")
 @CrossOrigin
-public class UserController {
+public class TeamCompController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TeamCompController.class);
 	
 	@Autowired
-	private UserService userService;
+	private TeamCompService teamCompService;
 	
 	@PostMapping("/save")
-	public ResponseEntity<ResponseDTO> save(@RequestBody UserDTO u) {
+	public ResponseEntity<ResponseDTO> save(@RequestBody TeamCompDTO t) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(userService.save(u));
-			response.setResponse("User saved");
+			response.setObjResponse(teamCompService.save(t));
+			response.setResponse("Team comp saved");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
@@ -49,11 +48,11 @@ public class UserController {
 	}
 	
 	@PutMapping("/update")
-	public ResponseEntity<ResponseDTO> update(@RequestBody UserDTO u) {
+	public ResponseEntity<ResponseDTO> update(@RequestBody TeamCompDTO t) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(userService.update(u));
-			response.setResponse("User updated");
+			response.setObjResponse(teamCompService.update(t));
+			response.setResponse("Team comp updated");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
@@ -70,8 +69,8 @@ public class UserController {
 	public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			userService.delete(id);
-			response.setResponse("User deleted");
+			teamCompService.delete(id);
+			response.setResponse("Team comp deleted");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
@@ -84,90 +83,72 @@ public class UserController {
 		}
 	}
 	
-	@PutMapping("/admin-permit/{email}")
-	public ResponseEntity<ResponseDTO> adminPermit(@PathVariable String email) {
-		ResponseDTO response = new ResponseDTO();
-		try {
-			response.setObjResponse(userService.adminPermit(email));
-			response.setResponse("Admin permit updated");
-			return ResponseEntity.status(HttpStatus.OK).body(response);			
-		} catch (IllegalArgumentException i) {
-	    	LOGGER.error(i.getMessage(), i);
-	    	response.setResponse(i.getMessage());
-	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
-	    	LOGGER.error(e.getMessage(), e);
-			response.setResponse(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		}
-	}
-
-	@GetMapping("/auth")
-	public ResponseEntity<ResponseDTO> authUser(@RequestParam String email, @RequestParam String password) {
-		ResponseDTO response = new ResponseDTO();
-		try {
-			response.setObjResponse(userService.authUser(email, password));
-			response.setResponse("User logged");
-			return ResponseEntity.status(HttpStatus.OK).body(response);			
-		} catch (IllegalArgumentException i) {
-	    	LOGGER.error(i.getMessage(), i);
-	    	response.setResponse(i.getMessage());
-	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
-	    	LOGGER.error(e.getMessage(), e);
-			response.setResponse(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		}
-	}
-	
-	@GetMapping("/find-all") 
-	public ResponseEntity<ResponseDTO> findAll() {
-		ResponseDTO response = new ResponseDTO();
-		try {
-			response.setObjResponse(userService.findAll());
-			response.setResponse("Users found");
-			return ResponseEntity.status(HttpStatus.OK).body(response);			
-		} catch (IllegalArgumentException i) {
-	    	LOGGER.error(i.getMessage(), i);
-	    	response.setResponse(i.getMessage());
-	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
-	    	LOGGER.error(e.getMessage(), e);
-			response.setResponse(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		}
-	}
-	
 	@GetMapping("/find-id/{id}")
 	public ResponseEntity<ResponseDTO> findById(@PathVariable Long id) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(userService.findById(id));
-			response.setResponse("User found");
+			response.setObjResponse(teamCompService.findById(id));
+			response.setResponse("Team comp found");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
 	    	response.setResponse(i.getMessage());
 	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
+		}	catch (Exception e) {
 	    	LOGGER.error(e.getMessage(), e);
 			response.setResponse(e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
 	
-	@GetMapping("/find-email/{email}")
-	public ResponseEntity<ResponseDTO> findByEmail(@PathVariable String email) {
+	@GetMapping("/find-team/{id}")
+	public ResponseEntity<ResponseDTO> findByTeam(@PathVariable Long id) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(userService.findByEmail(email));
-			response.setResponse("User found");
+			response.setObjResponse(teamCompService.findByTeam(id));
+			response.setResponse("Team comps found");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
 	    	response.setResponse(i.getMessage());
 	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
+		}	catch (Exception e) {
+	    	LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
+	@GetMapping("/find-name/{name}")
+	public ResponseEntity<ResponseDTO> findByName(@PathVariable String name) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(teamCompService.findByName(name));
+			response.setResponse("Team comp found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);			
+		} catch (IllegalArgumentException i) {
+	    	LOGGER.error(i.getMessage(), i);
+	    	response.setResponse(i.getMessage());
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
+		}	catch (Exception e) {
+	    	LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
+	@GetMapping("/find-all")
+	public ResponseEntity<ResponseDTO> findAll() {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(teamCompService.findAll());
+			response.setResponse("Team comps found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);			
+		} catch (IllegalArgumentException i) {
+	    	LOGGER.error(i.getMessage(), i);
+	    	response.setResponse(i.getMessage());
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
+		}	catch (Exception e) {
 	    	LOGGER.error(e.getMessage(), e);
 			response.setResponse(e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);

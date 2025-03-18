@@ -1,16 +1,17 @@
 package lol_manager.dto;
 
-public class ChampDTO {
+public class TeamDTO {
 
-	private Long idChamp;
+	private Long idTeam;
 	private String name;
+	private String tag;
 	private String img;
 	
-	public Long getIdChamp() {
-		return idChamp;
+	public Long getIdTeam() {
+		return idTeam;
 	}
-	public void setIdChamp(Long idChamp) {
-		this.idChamp = idChamp;
+	public void setIdTeam(Long idTeam) {
+		this.idTeam = idTeam;
 	}
 	public String getName() {
 		return name;
@@ -18,12 +19,18 @@ public class ChampDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public String getTag() {
+		return tag;
+	}
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
 	public String getImg() {
 		return img;
 	}
 	public void setImg(String img) {
 		this.img = img;
 	}
-
-		
+	
+	
 }

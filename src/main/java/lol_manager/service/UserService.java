@@ -23,56 +23,57 @@ public class UserService {
 	
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 	
-	public UserDTO save(UserDTO u) {
-//		Assert.isTrue(Validations.validFormUtente(u), "Invalid form");
+	public UserDTO save(UserDTO u) throws Exception {
+		Assert.isTrue(Validations.validFormUtente(u), "Invalid form");
 		Assert.isTrue(userRepository.findByEmail(u.getEmail()) == null, "Email registered");
 		User user = MapperManager.USERMAPPER.entityFromDto(u);
 		user.setPassword(encoder.encode(user.getPassword()));
 		return MapperManager.USERMAPPER.dtoFromEntity(userRepository.save(user));
-//		return userRepository.save(u);
 	}
 	
-	public User update(User u) {
+	public UserDTO update(UserDTO u) throws Exception {
 		findById(u.getIdUser());
 		Assert.isTrue(Validations.validFormUtente(u), "Invalid form");
-		u.setPassword(encoder.encode(u.getPassword()));
-		return userRepository.save(u);
+		User user = MapperManager.USERMAPPER.entityFromDto(u);
+		user.setPassword(encoder.encode(u.getPassword()));
+		return MapperManager.USERMAPPER.dtoFromEntity(userRepository.save(user));
 	}
 	
-	public void delete(Long idUser) {
+	public void delete(Long idUser) throws Exception {
 		findById(idUser);
 		userRepository.deleteById(idUser);
 	}
 	
 	@Transactional
-	public User adminPermit(String email) {
-		User user = findByEmail(email);
+	public UserDTO adminPermit(String email) throws Exception {
+		UserDTO user = findByEmail(email);
 		user.setAdmin(!user.isAdmin());
 		int modifiche = userRepository.adminPermit(user.isAdmin(), user.getEmail());	
 		return modifiche > 0 ? user : null;
 	}
 	
-	public User authUser(String email, String password) {
-		User user = findByEmail(email);
-		Assert.isTrue(encoder.matches(password, user.getPassword()), "Invalid credentials");
-		return user;
-	}
-	
-	public List<User> findAll() {
-		List<User> users = userRepository.findAll();
-		Assert.isTrue(users.size() != 0 , "No users found");
-		return users;
-	}
-	
-	public User findById(Long idUser) {
-		Optional<User> user = userRepository.findById(idUser);
-		Assert.isTrue(user.isPresent(), "User not found");
-		return user.get();
-	}
-	
-	public User findByEmail(String email) {
+	public UserDTO authUser(String email, String password) throws Exception {
 		User user = userRepository.findByEmail(email);
 		Assert.isTrue(user != null, "User not found");
-		return user;
+		Assert.isTrue(encoder.matches(password, user.getPassword()), "Invalid credentials");
+		return MapperManager.USERMAPPER.dtoFromEntity(user);
+	}
+	
+	public List<UserDTO> findAll() throws Exception {
+		List<User> users = userRepository.findAll();
+		Assert.isTrue(users.size() != 0 , "No users found");
+		return MapperManager.USERMAPPER.dtoFromEntity(users);
+	}
+	
+	public UserDTO findById(Long idUser) throws Exception {
+		Optional<User> user = userRepository.findById(idUser);
+		Assert.isTrue(user.isPresent(), "User not found");
+		return MapperManager.USERMAPPER.dtoFromEntity(user.get());
+	}
+	
+	public UserDTO findByEmail(String email) throws Exception {
+		User user = userRepository.findByEmail(email);
+		Assert.isTrue(user != null, "User not found");
+		return MapperManager.USERMAPPER.dtoFromEntity(user);
 	}
 }

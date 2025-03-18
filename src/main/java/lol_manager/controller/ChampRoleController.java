@@ -16,26 +16,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import lol_manager.dto.ChampRoleDTO;
 import lol_manager.dto.ResponseDTO;
-import lol_manager.dto.UserDTO;
-import lol_manager.service.UserService;
+import lol_manager.service.ChampRoleService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/champ-role")
 @CrossOrigin
-public class UserController {
+public class ChampRoleController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ChampRoleController.class);
 	
 	@Autowired
-	private UserService userService;
+	private ChampRoleService champRoleService;
 	
 	@PostMapping("/save")
-	public ResponseEntity<ResponseDTO> save(@RequestBody UserDTO u) {
+	public ResponseEntity<ResponseDTO> save(@RequestBody ChampRoleDTO c) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(userService.save(u));
-			response.setResponse("User saved");
+			response.setObjResponse(champRoleService.save(c));
+			response.setResponse("Champion role saved");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
@@ -49,11 +49,11 @@ public class UserController {
 	}
 	
 	@PutMapping("/update")
-	public ResponseEntity<ResponseDTO> update(@RequestBody UserDTO u) {
+	public ResponseEntity<ResponseDTO> update(@RequestBody ChampRoleDTO c) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(userService.update(u));
-			response.setResponse("User updated");
+			response.setObjResponse(champRoleService.update(c));
+			response.setResponse("Champion role updated");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
@@ -66,12 +66,12 @@ public class UserController {
 		}
 	}
 	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+	@DeleteMapping("/delete")
+	public ResponseEntity<ResponseDTO> delete(@RequestParam Long idComp, @RequestParam Long idChamp, @RequestParam String role) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			userService.delete(id);
-			response.setResponse("User deleted");
+			champRoleService.delete(idComp, idChamp, role);
+			response.setResponse("Champion role deleted");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
@@ -84,94 +84,93 @@ public class UserController {
 		}
 	}
 	
-	@PutMapping("/admin-permit/{email}")
-	public ResponseEntity<ResponseDTO> adminPermit(@PathVariable String email) {
+	@GetMapping("/find-id")
+	public ResponseEntity<ResponseDTO> findById(@RequestParam Long idComp, @RequestParam Long idChamp, @RequestParam String role) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(userService.adminPermit(email));
-			response.setResponse("Admin permit updated");
+			response.setObjResponse(champRoleService.findById(idComp, idChamp, role));
+			response.setResponse("Champion role found");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
 	    	response.setResponse(i.getMessage());
 	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
-	    	LOGGER.error(e.getMessage(), e);
-			response.setResponse(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		}
-	}
-
-	@GetMapping("/auth")
-	public ResponseEntity<ResponseDTO> authUser(@RequestParam String email, @RequestParam String password) {
-		ResponseDTO response = new ResponseDTO();
-		try {
-			response.setObjResponse(userService.authUser(email, password));
-			response.setResponse("User logged");
-			return ResponseEntity.status(HttpStatus.OK).body(response);			
-		} catch (IllegalArgumentException i) {
-	    	LOGGER.error(i.getMessage(), i);
-	    	response.setResponse(i.getMessage());
-	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
+		}	catch (Exception e) {
 	    	LOGGER.error(e.getMessage(), e);
 			response.setResponse(e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
 	
-	@GetMapping("/find-all") 
+	@GetMapping("/find-comp/{id}")
+	public ResponseEntity<ResponseDTO> findByComp(@PathVariable Long id) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(champRoleService.findByIdComp(id));
+			response.setResponse("Champion roles found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);			
+		} catch (IllegalArgumentException i) {
+	    	LOGGER.error(i.getMessage(), i);
+	    	response.setResponse(i.getMessage());
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
+		}	catch (Exception e) {
+	    	LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
+	@GetMapping("/find-champ/{id}")
+	public ResponseEntity<ResponseDTO> findByChamp(@PathVariable Long id) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(champRoleService.findByIdChamp(id));
+			response.setResponse("Champion roles found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);			
+		} catch (IllegalArgumentException i) {
+	    	LOGGER.error(i.getMessage(), i);
+	    	response.setResponse(i.getMessage());
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
+		}	catch (Exception e) {
+	    	LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
+	@GetMapping("/find-role/{role}")
+	public ResponseEntity<ResponseDTO> findByComp(@PathVariable String role) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(champRoleService.findByRole(role));
+			response.setResponse("Champion roles found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);			
+		} catch (IllegalArgumentException i) {
+	    	LOGGER.error(i.getMessage(), i);
+	    	response.setResponse(i.getMessage());
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
+		}	catch (Exception e) {
+	    	LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
+	@GetMapping("/find-all")
 	public ResponseEntity<ResponseDTO> findAll() {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(userService.findAll());
-			response.setResponse("Users found");
+			response.setObjResponse(champRoleService.findAll());
+			response.setResponse("Champion roles found");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
 	    	response.setResponse(i.getMessage());
 	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
+		}	catch (Exception e) {
 	    	LOGGER.error(e.getMessage(), e);
 			response.setResponse(e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
-	
-	@GetMapping("/find-id/{id}")
-	public ResponseEntity<ResponseDTO> findById(@PathVariable Long id) {
-		ResponseDTO response = new ResponseDTO();
-		try {
-			response.setObjResponse(userService.findById(id));
-			response.setResponse("User found");
-			return ResponseEntity.status(HttpStatus.OK).body(response);			
-		} catch (IllegalArgumentException i) {
-	    	LOGGER.error(i.getMessage(), i);
-	    	response.setResponse(i.getMessage());
-	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
-	    	LOGGER.error(e.getMessage(), e);
-			response.setResponse(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		}
-	}
-	
-	@GetMapping("/find-email/{email}")
-	public ResponseEntity<ResponseDTO> findByEmail(@PathVariable String email) {
-		ResponseDTO response = new ResponseDTO();
-		try {
-			response.setObjResponse(userService.findByEmail(email));
-			response.setResponse("User found");
-			return ResponseEntity.status(HttpStatus.OK).body(response);			
-		} catch (IllegalArgumentException i) {
-	    	LOGGER.error(i.getMessage(), i);
-	    	response.setResponse(i.getMessage());
-	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		} catch (Exception e) {
-	    	LOGGER.error(e.getMessage(), e);
-			response.setResponse(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		}
-	}
-	
 }

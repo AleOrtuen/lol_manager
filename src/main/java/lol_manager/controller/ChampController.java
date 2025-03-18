@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lol_manager.dto.ChampDTO;
-import lol_manager.model.Champion;
+import lol_manager.dto.ResponseDTO;
 import lol_manager.service.ChampService;
 
 @RestController
@@ -30,8 +30,8 @@ public class ChampController {
 	private ChampService champService;
 	
 	@PostMapping("/save")
-	public ResponseEntity<ChampDTO> save(@RequestBody Champion c) {
-		ChampDTO response = new ChampDTO();
+	public ResponseEntity<ResponseDTO> save(@RequestBody ChampDTO c) {
+		ResponseDTO response = new ResponseDTO();
 		try {
 			response.setObjResponse(champService.save(c));
 			response.setResponse("Champion saved");
@@ -48,8 +48,8 @@ public class ChampController {
 	}
 	
 	@PutMapping("/update")
-	public ResponseEntity<ChampDTO> update(@RequestBody Champion c) {
-		ChampDTO response = new ChampDTO();
+	public ResponseEntity<ResponseDTO> update(@RequestBody ChampDTO c) {
+		ResponseDTO response = new ResponseDTO();
 		try {
 			response.setObjResponse(champService.update(c));
 			response.setResponse("Champion updated");
@@ -66,8 +66,8 @@ public class ChampController {
 	}
 	
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<ChampDTO> delete(@PathVariable Long id) {
-		ChampDTO response = new ChampDTO();
+	public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+		ResponseDTO response = new ResponseDTO();
 		try {
 			champService.delete(id);
 			response.setResponse("Champion deleted");
@@ -84,8 +84,8 @@ public class ChampController {
 	}
 	
 	@GetMapping("/find-all") 
-	public ResponseEntity<ChampDTO> findAll() {
-		ChampDTO response = new ChampDTO();
+	public ResponseEntity<ResponseDTO> findAll() {
+		ResponseDTO response = new ResponseDTO();
 		try {
 			response.setObjResponse(champService.findAll());
 			response.setResponse("Champions found");
@@ -101,9 +101,27 @@ public class ChampController {
 		}
 	}
 	
+	@GetMapping("/find-comp/{id}")
+	public ResponseEntity<ResponseDTO> findByIdComp(@PathVariable Long id) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(champService.findByIdComp(id));
+			response.setResponse("Champions found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);			
+		} catch (IllegalArgumentException i) {
+	    	LOGGER.error(i.getMessage(), i);
+	    	response.setResponse(i.getMessage());
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
+		} catch (Exception e) {
+	    	LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
 	@GetMapping("/find-id/{id}")
-	public ResponseEntity<ChampDTO> findById(@PathVariable Long id) {
-		ChampDTO response = new ChampDTO();
+	public ResponseEntity<ResponseDTO> findById(@PathVariable Long id) {
+		ResponseDTO response = new ResponseDTO();
 		try {
 			response.setObjResponse(champService.findById(id));
 			response.setResponse("Champion found");
@@ -120,8 +138,8 @@ public class ChampController {
 	}
 	
 	@GetMapping("/find-name/{name}")
-	public ResponseEntity<ChampDTO> findByName(@PathVariable String name) {
-		ChampDTO response = new ChampDTO();
+	public ResponseEntity<ResponseDTO> findByName(@PathVariable String name) {
+		ResponseDTO response = new ResponseDTO();
 		try {
 			response.setObjResponse(champService.findByName(name));
 			response.setResponse("Champion found");

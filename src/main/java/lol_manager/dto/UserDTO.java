@@ -1,5 +1,7 @@
 package lol_manager.dto;
 
+import java.util.List;
+
 public class UserDTO {
 
 	private Long idUser;
@@ -7,7 +9,7 @@ public class UserDTO {
 	private String email;
 	private String password;
 	private boolean admin;
-	
+	private List<ChampDTO> champions;
 	
 	public Long getIdUser() {
 		return idUser;
@@ -38,6 +40,13 @@ public class UserDTO {
 	}
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
+	}
+
+	public List<ChampDTO> getChampions() {
+		return champions;
+	}
+	public void setChampions(List<ChampDTO> champions) {
+		this.champions = champions;
 	}
 
 	
