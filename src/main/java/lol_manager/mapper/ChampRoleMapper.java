@@ -10,6 +10,8 @@ public class ChampRoleMapper extends BasicMapper<ChampRole, ChampRoleDTO> {
 		ChampRole entity = new ChampRole();
 		entity.setChamp(MapperManager.CHAMPMAPPER.entityFromDto(dto.getChampion()));
 		entity.setComp(MapperManager.TEAMCOMPMAPPER.entityFromDto(dto.getComp()));
+	    entity.getIdChampRole().setIdChamp(dto.getChampion().getIdChamp());
+	    entity.getIdChampRole().setIdComp(dto.getComp().getIdComp());
 	    entity.getIdChampRole().setRole(dto.getRole());
 		entity.setDescr(dto.getDescr());
 		entity.setPowerPick(dto.isPowerPick());

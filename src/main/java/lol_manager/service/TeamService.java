@@ -23,10 +23,7 @@ public class TeamService {
 
 	@Autowired
 	private TeamRepository teamRepository;
-	
-//	@Autowired
-//	private ChampService champService;
-	
+		
 	public TeamDTO save(TeamDTO t) throws Exception {
 		Assert.isTrue(Validations.validTeam(t), "Invalid form");
 		Team team = MapperManager.TEAMMAPPER.entityFromDto(t);
@@ -78,9 +75,9 @@ public class TeamService {
 	}
 	
 	public List<ChampRoleDTO> compCombinator(List<ChampRoleDTO> oldList, List<ChampRoleDTO> champRoles) throws Exception {
-		List<ChampRole> combinations = ChampRoleUtility.validCombinations(
+		List<ChampRole> combination = ChampRoleUtility.compCombinator(
 				MapperManager.CHAMPROLEMAPPER.entityFromDto(oldList), 
 				MapperManager.CHAMPROLEMAPPER.entityFromDto(champRoles));
-		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(combinations);
+		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(combination);
 	}
 }	

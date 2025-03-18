@@ -4,40 +4,56 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lol_manager.model.ChampRole;
 
 public class ChampRoleUtility {
 	
+	public static List<ChampRole> filterComp(List<ChampRole> oldList, List<ChampRole> newChamps) {
+	    List<ChampRole> result = new ArrayList<>();
+	    
+	    // Estrai le composizioni disponibili nei nuovi campioni
+	    Set<Long> availableComps = new HashSet<>();
+	    for (ChampRole newChamp : newChamps) {
+	        availableComps.add(newChamp.getIdChampRole().getIdComp());
+	    }
+	    
+	    // Filtra la vecchia lista per includere solo i campioni con composizioni compatibili
+	    for (ChampRole oldChamp : oldList) {
+	        if (availableComps.contains(oldChamp.getIdChampRole().getIdComp())) {
+	            result.add(oldChamp);
+	        }
+	    }
+	    
+	    // Aggiungi i nuovi campioni
+	    result.addAll(newChamps);
+	    
+	    return result;
+	}
 	
-//	public static List<ChampRole> getValidOptions(List<ChampRole> currentTeam, List<ChampRole> allAvailableChamps) {
-//	    // Implementazione esistente che restituisce EKKO(M) come opzione valida
-//	    // ...
-//	}
-//
+	
 	public static List<ChampRole> updateTeamWithNewChamp(List<ChampRole> currentTeam, List<ChampRole> selectedChamp) {
+		List<ChampRole> withOutNewChamp = currentTeam;
+		withOutNewChamp.removeAll(selectedChamp);
 	    List<ChampRole> updatedTeam = new ArrayList<>();
-		
-		for (ChampRole selectedRoleChamp : selectedChamp) {
-			
-			String selectedRole = selectedRoleChamp.getIdChampRole().getRole();
-			
+	    	    
+	    for (ChampRole newRole : selectedChamp) {
+	    	
 		    // Aggiungi solo i campioni che non causano duplicazioni di ruolo con il nuovo campione
-		    for (ChampRole champ : currentTeam) {
-		        Long champId = champ.getIdChampRole().getIdChamp();
-		        String champRole = champ.getIdChampRole().getRole();
+		    for (ChampRole champ : withOutNewChamp) {
 		        
 		        // Se questo campione ha lo stesso ruolo del nuovo campione selezionato,
 		        // assicuriamoci che non ci siano duplicazioni non necessarie
-		        if (champRole.equals(selectedRole)) {
+		        if (champ.getIdChampRole().getRole().equals(newRole.getIdChampRole().getRole())) {
 		            boolean keepChamp = true;
 		            
 		            // Verifica se il campione attuale è intercambiabile (ha altre opzioni di ruolo)
 		            // Se è intercambiabile, possiamo considerare di rimuoverlo
-		            for (ChampRole otherChamp : currentTeam) {
+		            for (ChampRole otherChamp : withOutNewChamp) {
 		                if (!otherChamp.equals(champ) && 
-		                    otherChamp.getIdChampRole().getIdChamp() == champId &&
-		                    !otherChamp.getIdChampRole().getRole().equals(champRole)) {
+		                    otherChamp.getIdChampRole().getIdChamp() == champ.getIdChampRole().getIdChamp() &&
+		                    !otherChamp.getIdChampRole().getRole().equals(champ.getIdChampRole().getRole())) {
 		                    keepChamp = false;
 		                    break;
 		                }
@@ -51,77 +67,53 @@ public class ChampRoleUtility {
 		            updatedTeam.add(champ);
 		        }
 		    }
-			
-		}	    
+	    	
+	    }
 
+	    // STREAM PER RIMUOVERE I DUPLICATI
+	    updatedTeam = updatedTeam.stream().distinct().collect(Collectors.toList());
 	    
-	    // Aggiungi il nuovo campione selezionato
+	    // Aggiungi i campioni selezionati
 	    updatedTeam.addAll(selectedChamp);
 	    
 	    return updatedTeam;
 	}
 	
-	public static List<ChampRole> filterComp(List<ChampRole> oldList, List<ChampRole> newChamps) {
-	    List<ChampRole> result = new ArrayList<>();
+	public static List<ChampRole> uniqueRoleChampRemoval(List<ChampRole> currentTeam) {
+	    List<ChampRole> uniqueRoleTeam = new ArrayList<>();	    
+	    uniqueRoleTeam.addAll(currentTeam);
 	    
-	    Set<Long> availableComps = new HashSet<>();
-	    for (ChampRole newChamp : newChamps) {
-	        availableComps.add(newChamp.getComp().getIdComp());
+	    for (ChampRole champ : currentTeam) {
+	    	boolean uniqueRoleChamp = true;
+	    	
+	    	for (ChampRole unique : currentTeam) {
+	    		if(champ.getIdChampRole().getIdChamp() == unique.getIdChampRole().getIdChamp() &&
+	    		  !champ.getIdChampRole().getRole().equals(unique.getIdChampRole().getRole())) {
+	    			uniqueRoleChamp = false;
+	    			break;
+	    		}
+	    	}
+	    	
+	    	if (uniqueRoleChamp) {
+	    		for (ChampRole removable : currentTeam) {
+	    			if (champ.getIdChampRole().getIdChamp() != removable.getIdChampRole().getIdChamp() &&
+	    				champ.getIdChampRole().getRole().equals(removable.getIdChampRole().getRole())) {
+	    				uniqueRoleTeam.remove(removable);
+	    			}
+	    		}
+	    	}
+	    	
 	    }
 	    
-	    for (ChampRole oldChamp : oldList) {
-	        if (availableComps.contains(oldChamp.getComp().getIdComp())) {
-	            result.add(oldChamp);
-	        }
-	    }
-	    
-	    result.addAll(newChamps);
-	    
-	    return result;
+	    return uniqueRoleTeam;
+	}
+	
+	
+	public static List<ChampRole> compCombinator(List<ChampRole> oldList, List<ChampRole> champRoles) {
+		List<ChampRole> validComps = filterComp(oldList, champRoles);
+		List<ChampRole> validRoles = updateTeamWithNewChamp(validComps, champRoles);
+		List<ChampRole> validTeam = uniqueRoleChampRemoval(validRoles);
+		return validTeam;
 	}
 
-//	public static List<ChampRole> filterComp(List<ChampRole> oldList, List<ChampRole> champRoles) {
-//		List<ChampRole> newList = new ArrayList<>();
-//
-//		if (!oldList.isEmpty()) {
-//			for (ChampRole role1 : oldList) {
-//				for (ChampRole role2 : champRoles) {
-//					if (role1.getComp().getIdComp() == role2.getComp().getIdComp()) {
-//						newList.add(role1);
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		newList.addAll(champRoles);
-//
-//		return newList;
-//	}
-	
-	
-//	public static List<ChampRole> filterRole(List<ChampRole> oldList, List<ChampRole> champRoles) {
-//		List<ChampRole> noNewRoles = oldList;
-//		noNewRoles.removeAll(champRoles);
-//		List<ChampRole> addToList = new ArrayList<>();
-//		List<ChampRole> newList = new ArrayList<>();
-//				
-//		for (ChampRole champRole : noNewRoles) {
-//			for (ChampRole champRole2 : champRoles) {
-//				if(!champRole.getIdChampRole().getRole().equals(champRole2.getIdChampRole().getRole())) {
-//					addToList.add(champRole);
-//					break;
-//				}
-//			}
-//		}
-//		newList.addAll(addToList);
-//		newList.addAll(champRoles);
-//		
-//		return newList;
-//	}
-	
-	public static List<ChampRole> validCombinations(List<ChampRole> oldList, List<ChampRole> champRoles) {
-		List<ChampRole> validComps = filterComp(oldList, champRoles);
-		List<ChampRole> validRoles = updateTeamWithNewChamp(validComps, champRoles);		
-		return validRoles;
-	}
 }
