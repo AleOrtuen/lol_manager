@@ -1,5 +1,6 @@
 package lol_manager.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,11 @@ public class ChampRoleService {
 		List<ChampRole> champRoles = champRoleRepository.findByIdChampRole_role(role);
 		Assert.isTrue(champRoles.size() != 0, "Champ roles not found");
 		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(champRoles);
+	}
+	
+	public List<ChampRoleDTO> findAllCompatible() throws Exception {
+		List<ChampRole> compatibleChamps = new ArrayList<ChampRole>();
+		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(compatibleChamps);
 	}
 	
 	public List<ChampRoleDTO> findAll() throws Exception {

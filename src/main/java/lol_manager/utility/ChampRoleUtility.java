@@ -116,4 +116,44 @@ public class ChampRoleUtility {
 		return validTeam;
 	}
 
+	public static List<Long> validIdComps(List<ChampRole> champRoles) {
+	    Set<Long> availableComps = new HashSet<>();
+	    for (ChampRole comp : champRoles) {
+	        availableComps.add(comp.getIdChampRole().getIdComp());
+	    }	    
+		List<Long> idsComp = new ArrayList<>(availableComps);
+		return idsComp;
+	}
+	
+	public static List<String> invalidRoles(List<ChampRole> champRoles) {
+		Set<String> takenRoles = new HashSet<>();
+		
+	    for (ChampRole role : champRoles) {
+	    	boolean uniqueRoleChamp = true;
+	    	
+	    	for (ChampRole unique : champRoles) {
+	    		if(role.getIdChampRole().getIdChamp() == unique.getIdChampRole().getIdChamp() &&
+	    		  !role.getIdChampRole().getRole().equals(unique.getIdChampRole().getRole())) {
+	    			uniqueRoleChamp = false;
+	    			break;
+	    		}
+	    	}
+	    	
+	    	if(uniqueRoleChamp) {
+	    		takenRoles.add(role.getIdChampRole().getRole());
+	    	}	    	
+	    }
+		
+		List<String> roles = new ArrayList<>(takenRoles);
+		return roles;
+	}
+	
+	public static List<Long> invalidChamps(List<ChampRole> champRoles) {
+		Set<Long> includedChamps = new HashSet<>();
+		for (ChampRole champ : champRoles) {
+			includedChamps.add(champ.getIdChampRole().getIdChamp());
+		}
+		List<Long> invalidChamps = new ArrayList<>(includedChamps);
+		return invalidChamps;
+	}
 }

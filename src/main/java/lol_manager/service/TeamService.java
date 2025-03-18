@@ -80,4 +80,10 @@ public class TeamService {
 				MapperManager.CHAMPROLEMAPPER.entityFromDto(champRoles));
 		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(combination);
 	}
+	
+	public List<String> invalidRoles(List<ChampRoleDTO> champRoles) throws Exception {
+		List<String> invalidRoles = ChampRoleUtility.invalidRoles(MapperManager.CHAMPROLEMAPPER.entityFromDto(champRoles));
+
+		return invalidRoles;
+	}
 }	

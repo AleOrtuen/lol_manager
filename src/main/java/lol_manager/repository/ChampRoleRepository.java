@@ -24,5 +24,15 @@ public interface ChampRoleRepository extends JpaRepository<ChampRole, ChampRoleE
     List<ChampRole> findByIdChampRole_idChamp(Long idChamp);
     
     List<ChampRole> findByIdChampRole_role(String role);
+    
+    @Query("SELECT cr FROM ChampRole cr " +
+    		"WHERE cr.idChampRole.idComp IN :idsComp " +
+    	    "AND cr.idChampRole.role NOT IN :excludedRoles " +
+    		"AND cr.idChampRole.idChamp NOT IN :excludedChampIds")
+    List<ChampRole> findAllCompatible(
+    	    @Param("idsComp") List<Long> idsComp, 
+    	    @Param("roles") List<String> excludedRoles, 
+    	    @Param("excludedChampIds") List<Long> excludedChampIds
+    );
 		
 }
