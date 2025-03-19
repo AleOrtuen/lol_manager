@@ -33,28 +33,29 @@ public class ChampRoleUtility {
 	    return result;
 	}
 	
-	// RIMUOVE TUTTI I CHAMP NON COMPATIBILI CON LE COMP DELLA NUOVA SELEZIONE
-//	public static List<ChampRole> filterComp(List<ChampRole> oldList) {
-//	    List<ChampRole> result = new ArrayList<>();
-//	    
-//	    // Estrai le composizioni disponibili nei nuovi campioni
-//	    Set<Long> availableComps = new HashSet<>();
-//	    for (ChampRole newChamp : newChamps) {
-//	        availableComps.add(newChamp.getIdChampRole().getIdComp());
-//	    }
-//	    
-//	    // Filtra la vecchia lista per includere solo i campioni con composizioni compatibili
-//	    for (ChampRole oldChamp : oldList) {
-//	        if (availableComps.contains(oldChamp.getIdChampRole().getIdComp())) {
-//	            result.add(oldChamp);
-//	        }
-//	    }
-//	    
-//	    // Aggiungi i nuovi campioni
-//	    result.addAll(newChamps);
-//	    
-//	    return result;
-//	}
+	// RIMUOVE TUTTI I CHAMP NON COMPATIBILI CON LE COMP 
+	public static List<ChampRole> filterComp(List<ChampRole> oldList) {
+	    List<ChampRole> result = new ArrayList<>();
+	    
+	    // Estrai le composizioni valide per il primo champ
+	    Set<Long> availableComps = new HashSet<>();
+	    for (ChampRole champ : oldList) {
+	        // Aggiungi la composizione del campione corrente al set
+	        availableComps.add(champ.getIdChampRole().getIdComp());
+	    }
+	    
+	    // Per ogni champ, verifica se è compatibile con una delle composizioni
+	    for (ChampRole champ : oldList) {
+	        if (availableComps.contains(champ.getIdChampRole().getIdComp())) {
+	            result.add(champ); // Aggiungi solo i campioni compatibili
+	        }
+	    }
+	    
+	    return result;
+	}
+
+	
+
 	
 	//CREA LA NUOVA LISTA COMBINANDO IL NUOVO CHAMP CON LA LISTA VECCHIA
 	public static List<ChampRole> updateTeamWithNewChamp(List<ChampRole> currentTeam, List<ChampRole> selectedChamp) {
@@ -137,7 +138,8 @@ public class ChampRoleUtility {
 	public static List<ChampRole> compCombinator(List<ChampRole> oldList, List<ChampRole> champRoles) {
 		List<ChampRole> validComps = filterComp(oldList, champRoles);
 		List<ChampRole> validRoles = updateTeamWithNewChamp(validComps, champRoles);
-		List<ChampRole> validTeam = uniqueRoleChampRemoval(validRoles);
+		List<ChampRole> validUniqueRole = uniqueRoleChampRemoval(validRoles);
+		List<ChampRole> validTeam = filterComp(validUniqueRole); 
 		return validTeam;
 	}
 
