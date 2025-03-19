@@ -1,5 +1,7 @@
 package lol_manager.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,4 +175,23 @@ public class ChampRoleController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
+	
+	@PostMapping("/compatible-champs")
+	public ResponseEntity<ResponseDTO> invalidRoles(@RequestBody List<ChampRoleDTO> dto) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(champRoleService.findAllCompatible(dto));
+			response.setResponse("Compatible champs found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);			
+		} catch (IllegalArgumentException i) {
+	    	LOGGER.error(i.getMessage(), i);
+	    	response.setResponse(i.getMessage());
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
+		}	catch (Exception e) {
+	    	LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
 }

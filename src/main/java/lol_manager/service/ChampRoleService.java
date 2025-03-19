@@ -1,6 +1,5 @@
 package lol_manager.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import lol_manager.dto.ChampRoleDTO;
 import lol_manager.mapper.MapperManager;
 import lol_manager.model.ChampRole;
 import lol_manager.repository.ChampRoleRepository;
+import lol_manager.utility.ChampRoleUtility;
 import lol_manager.validation.Validations;
 
 @Service
@@ -74,8 +74,12 @@ public class ChampRoleService {
 		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(champRoles);
 	}
 	
-	public List<ChampRoleDTO> findAllCompatible() throws Exception {
-		List<ChampRole> compatibleChamps = new ArrayList<ChampRole>();
+	public List<ChampRoleDTO> findAllCompatible(List<ChampRoleDTO> champRoles) throws Exception {
+		List<ChampRole> entity = MapperManager.CHAMPROLEMAPPER.entityFromDto(champRoles);
+		List<Long> idsComp = ChampRoleUtility.validIdComps(entity);
+		List<Long> invalidChamps = ChampRoleUtility.invalidChamps(entity);
+		List<String> invalidRoles = ChampRoleUtility.invalidRoles(entity);
+		List<ChampRole> compatibleChamps = champRoleRepository.findAllCompatible(idsComp, invalidRoles, invalidChamps);
 		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(compatibleChamps);
 	}
 	

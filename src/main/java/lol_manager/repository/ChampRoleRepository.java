@@ -31,7 +31,7 @@ public interface ChampRoleRepository extends JpaRepository<ChampRole, ChampRoleE
     		"AND cr.idChampRole.idChamp NOT IN :excludedChampIds")
     List<ChampRole> findAllCompatible(
     	    @Param("idsComp") List<Long> idsComp, 
-    	    @Param("roles") List<String> excludedRoles, 
+    	    @Param("excludedRoles") List<String> excludedRoles, 
     	    @Param("excludedChampIds") List<Long> excludedChampIds
     );
 		

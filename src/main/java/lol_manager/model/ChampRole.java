@@ -1,5 +1,7 @@
 package lol_manager.model;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -88,4 +90,24 @@ public class ChampRole {
 		this.powerPick = powerPick;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(champ, comp, descr, idChampRole, powerPick);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ChampRole other = (ChampRole) obj;
+		return Objects.equals(champ, other.champ) && Objects.equals(comp, other.comp)
+				&& Objects.equals(descr, other.descr) && Objects.equals(idChampRole, other.idChampRole)
+				&& powerPick == other.powerPick;
+	}
+
+	
 }

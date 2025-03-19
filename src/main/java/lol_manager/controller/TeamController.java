@@ -192,21 +192,4 @@ public class TeamController {
 		}
 	}
 	
-	@PostMapping("/invalid-roles")
-	public ResponseEntity<ResponseDTO> invalidRoles(@RequestBody RequestDTO request) {
-		ResponseDTO response = new ResponseDTO();
-		try {
-			response.setObjResponse(teamService.invalidRoles(request.getChampRoles()));
-			response.setResponse("Invalid roles found");
-			return ResponseEntity.status(HttpStatus.OK).body(response);			
-		} catch (IllegalArgumentException i) {
-	    	LOGGER.error(i.getMessage(), i);
-	    	response.setResponse(i.getMessage());
-	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		}	catch (Exception e) {
-	    	LOGGER.error(e.getMessage(), e);
-			response.setResponse(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		}
-	}
 }
