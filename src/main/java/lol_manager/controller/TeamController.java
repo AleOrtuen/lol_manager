@@ -1,5 +1,8 @@
 package lol_manager.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lol_manager.dto.ChampRoleDTO;
 import lol_manager.dto.RequestDTO;
 import lol_manager.dto.ResponseDTO;
+import lol_manager.dto.TeamCompDTO;
 import lol_manager.dto.TeamDTO;
+import lol_manager.service.ChampRoleService;
+import lol_manager.service.TeamCompService;
 import lol_manager.service.TeamService;
 
 @RestController
@@ -29,6 +36,12 @@ public class TeamController {
 	
 	@Autowired
 	private TeamService teamService;
+	
+	@Autowired
+	private ChampRoleService champRoleService;
+	
+	@Autowired
+	private TeamCompService teamCompService;
 	
 	@PostMapping("/save")
 	public ResponseEntity<ResponseDTO> save(@RequestBody TeamDTO t) {
@@ -174,12 +187,38 @@ public class TeamController {
 		}
 	}
 	
+	@GetMapping("/champs-comps/{id}")
+	public ResponseEntity<ResponseDTO> findChampsInComps(@PathVariable Long id) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			List<TeamCompDTO> comps = teamCompService.findByTeam(id);
+			List<ChampRoleDTO> roles = new ArrayList<>();
+			for (TeamCompDTO comp : comps) {
+				roles.addAll(champRoleService.findByIdComp(comp.getIdComp()));
+			}
+			response.setObjResponse(roles);
+			response.setResponse("Champions in all comps found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);			
+		} catch (IllegalArgumentException i) {
+	    	LOGGER.error(i.getMessage(), i);
+	    	response.setResponse(i.getMessage());
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
+		} catch (Exception e) {
+	    	LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
 	@PostMapping("/combinator")
 	public ResponseEntity<ResponseDTO> combinator(@RequestBody RequestDTO request) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(teamService.compCombinator(request.getOldList(), request.getChampRoles()));
-			response.setResponse("Combined");
+			List<ChampRoleDTO> combined = teamService.compCombinator(request.getOldList(), request.getChampRoles());
+			List<ChampRoleDTO> availableChamps = champRoleService.findAllCompatible(combined); 
+			response.setObjResponse(combined);
+			response.setObjResponse2(availableChamps);
+			response.setResponse("Combined; Compatible champs found");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);

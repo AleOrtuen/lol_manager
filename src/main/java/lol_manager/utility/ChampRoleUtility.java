@@ -33,29 +33,30 @@ public class ChampRoleUtility {
 	    return result;
 	}
 	
-	// RIMUOVE TUTTI I CHAMP NON COMPATIBILI CON LE COMP 
+	// RIMUOVE TUTTI I CHAMP NON COMPATIBILI CON UN SINGOLO CHAMP CHE HA LIMITAZIONI DI COMP
 	public static List<ChampRole> filterComp(List<ChampRole> oldList) {
 	    List<ChampRole> result = new ArrayList<>();
+	    result.addAll(oldList);
 	    
-	    // Estrai le composizioni valide per il primo champ
-	    Set<Long> availableComps = new HashSet<>();
 	    for (ChampRole champ : oldList) {
-	        // Aggiungi la composizione del campione corrente al set
-	        availableComps.add(champ.getIdChampRole().getIdComp());
+	    	//POPOLA IL SET CON LE COMP UTILIZZABILI DAL CHAMP
+		    Set<Long> comp = new HashSet<>();	        
+		    for (ChampRole champComps : oldList) {
+				if (champ.getIdChampRole().getIdChamp().equals(champComps.getIdChampRole().getIdChamp())) {
+					comp.add(champComps.getIdChampRole().getIdComp());
+				}
+			}
+		    
+		    //VERIFICA SE LA COMP DEL CHAMP E' COMPATIBILE LA POOL DI COMP DEL CHAMP SOPRA
+		    for (ChampRole allChamp : oldList) {
+		    	if(!comp.contains(allChamp.getIdChampRole().getIdComp())) {
+		    		result.remove(allChamp);
+		    	}
+		    }		    
 	    }
-	    
-	    // Per ogni champ, verifica se è compatibile con una delle composizioni
-	    for (ChampRole champ : oldList) {
-	        if (availableComps.contains(champ.getIdChampRole().getIdComp())) {
-	            result.add(champ); // Aggiungi solo i campioni compatibili
-	        }
-	    }
-	    
+	    	    
 	    return result;
 	}
-
-	
-
 	
 	//CREA LA NUOVA LISTA COMBINANDO IL NUOVO CHAMP CON LA LISTA VECCHIA
 	public static List<ChampRole> updateTeamWithNewChamp(List<ChampRole> currentTeam, List<ChampRole> selectedChamp) {
