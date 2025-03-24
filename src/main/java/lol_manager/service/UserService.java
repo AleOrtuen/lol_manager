@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import jakarta.transaction.Transactional;
+import lol_manager.dto.TeamDTO;
 import lol_manager.dto.UserDTO;
 import lol_manager.mapper.MapperManager;
+import lol_manager.model.Team;
 import lol_manager.model.User;
 import lol_manager.repository.UserRepository;
 import lol_manager.validation.Validations;
@@ -76,4 +78,12 @@ public class UserService {
 		Assert.isTrue(user != null, "User not found");
 		return MapperManager.USERMAPPER.dtoFromEntity(user);
 	}
+	
+	public List<TeamDTO> findTeams(Long idUser) throws Exception {
+		findById(idUser);
+		List<Team> teams = userRepository.findTeams(idUser);
+		Assert.isTrue(teams.size() != 0, "Teams not found");
+		return MapperManager.TEAMMAPPER.dtoFromEntity(teams);
+	}
+	
 }

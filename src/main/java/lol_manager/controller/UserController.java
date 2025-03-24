@@ -174,4 +174,22 @@ public class UserController {
 		}
 	}
 	
+	@GetMapping("/find-teams/{id}")
+	public ResponseEntity<ResponseDTO> findTeams(@PathVariable Long id) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(userService.findTeams(id));
+			response.setResponse("Teams found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);			
+		} catch (IllegalArgumentException i) {
+	    	LOGGER.error(i.getMessage(), i);
+	    	response.setResponse(i.getMessage());
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
+		} catch (Exception e) {
+	    	LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
 }
