@@ -6,7 +6,7 @@ public class RequestDTO {
 
 	private Object obj;
 	private List<ChampRoleDTO> oldList;
-	private List<ChampRoleDTO> champRoles;
+	private List<ChampRoleDTO> newList;
 
 	public Object getObj() {
 		return obj;
@@ -24,13 +24,14 @@ public class RequestDTO {
 		this.oldList = oldList;
 	}
 
-	public List<ChampRoleDTO> getChampRoles() {
-		return champRoles;
+	public List<ChampRoleDTO> getNewList() {
+		return newList;
 	}
 
-	public void setChampRoles(List<ChampRoleDTO> champRoles) {
-		this.champRoles = champRoles;
+	public void setNewList(List<ChampRoleDTO> newList) {
+		this.newList = newList;
 	}
+
 		
 	
 }

@@ -214,7 +214,7 @@ public class TeamController {
 	public ResponseEntity<ResponseDTO> combinator(@RequestBody RequestDTO request) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			List<ChampRoleDTO> combined = teamService.compCombinator(request.getOldList(), request.getChampRoles());
+			List<ChampRoleDTO> combined = teamService.compCombinator(request.getOldList(), request.getNewList());
 			List<ChampRoleDTO> availableChamps = champRoleService.findAllCompatible(combined); 
 			response.setObjResponse(combined);
 			response.setObjResponse2(availableChamps);

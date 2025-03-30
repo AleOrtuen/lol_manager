@@ -34,5 +34,6 @@ public interface ChampRoleRepository extends JpaRepository<ChampRole, ChampRoleE
     	    @Param("excludedRoles") List<String> excludedRoles, 
     	    @Param("excludedChampIds") List<Long> excludedChampIds
     );
-		
+
+
 }

@@ -74,11 +74,11 @@ public class TeamService {
 		return MapperManager.CHAMPMAPPER.dtoFromEntity(champs);
 	}
 		
-	public List<ChampRoleDTO> compCombinator(List<ChampRoleDTO> oldList, List<ChampRoleDTO> champRoles) throws Exception {
-		Assert.isTrue(champRoles.size() != 0, "Empty champ list");
+	public List<ChampRoleDTO> compCombinator(List<ChampRoleDTO> oldList, List<ChampRoleDTO> newList) throws Exception {
+		Assert.isTrue(newList.size() != 0, "Empty champ list");
 		List<ChampRole> combination = ChampRoleUtility.compCombinator(
 				MapperManager.CHAMPROLEMAPPER.entityFromDto(oldList), 
-				MapperManager.CHAMPROLEMAPPER.entityFromDto(champRoles));
+				MapperManager.CHAMPROLEMAPPER.entityFromDto(newList));
 		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(combination);
 	}
 	
