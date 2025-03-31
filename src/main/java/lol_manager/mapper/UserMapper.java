@@ -12,6 +12,7 @@ public class UserMapper extends BasicMapper<User, UserDTO>{
 		entity.setEmail(dto.getEmail());
 		entity.setPassword(dto.getPassword());
 		entity.setAdmin(dto.isAdmin());
+		entity.setpRole(dto.getpRole());
 		return entity;
 	}
 	
@@ -21,6 +22,7 @@ public class UserMapper extends BasicMapper<User, UserDTO>{
 		dto.setUsername(entity.getUsername());
 		dto.setEmail(entity.getEmail());
 		dto.setAdmin(entity.isAdmin());
+		dto.setpRole(entity.getpRole());
 		dto.setChampions(MapperManager.CHAMPMAPPER.dtoFromEntity(entity.getChampions()));
 		return dto;
 	}

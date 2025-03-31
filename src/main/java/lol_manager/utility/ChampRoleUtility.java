@@ -187,4 +187,37 @@ public class ChampRoleUtility {
 		List<Long> invalidChamps = new ArrayList<>(includedChamps);
 		return invalidChamps;
 	}
+	
+	//RIMUOVE CHAMP DALLA LISTA DEI NON PICKATI SE NEI PICKATI C'E UNICITA' DI RUOLO IN COMP
+	public static List<ChampRole> uniqueRolePerChamp(List<ChampRole> picked, List<ChampRole> nonPicked) throws Exception {
+		
+		List<ChampRole> compatibili = new ArrayList<>();
+		compatibili.addAll(nonPicked);
+		
+		for (ChampRole pick : picked) {
+			Long idChamp = pick.getIdChampRole().getIdChamp();
+			Long idComp = pick.getIdChampRole().getIdComp();
+			String role = pick.getIdChampRole().getRole();
+			boolean singleChampRole = true;
+			for (ChampRole unique : picked) {
+				if (idChamp.equals(unique.getIdChampRole().getIdChamp()) &&
+					idComp.equals(unique.getIdChampRole().getIdComp()) &&
+					!role.equals(unique.getIdChampRole().getRole())) {
+					singleChampRole = false;
+					break;
+				}
+			}
+			
+			if (singleChampRole) {
+				for (ChampRole newChamps : nonPicked) {
+					if (newChamps.getIdChampRole().getIdComp().equals(idComp) &&
+						newChamps.getIdChampRole().getRole().equals(role)) {
+						compatibili.remove(newChamps);
+					}
+				}
+			}
+			
+		}
+		return compatibili;
+	}
 }

@@ -9,6 +9,7 @@ public class UserDTO {
 	private String email;
 	private String password;
 	private boolean admin;
+	private String pRole;
 	private List<ChampDTO> champions;
 	
 	public Long getIdUser() {
@@ -42,6 +43,13 @@ public class UserDTO {
 		this.admin = admin;
 	}
 
+	public String getpRole() {
+		return pRole;
+	}
+	public void setpRole(String pRole) {
+		this.pRole = pRole;
+	}
+	
 	public List<ChampDTO> getChampions() {
 		return champions;
 	}
@@ -49,5 +57,5 @@ public class UserDTO {
 		this.champions = champions;
 	}
 
-	
+
 }

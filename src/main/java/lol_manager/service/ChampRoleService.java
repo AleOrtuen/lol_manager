@@ -80,7 +80,8 @@ public class ChampRoleService {
 		List<Long> invalidChamps = ChampRoleUtility.invalidChamps(entity);
 		List<String> invalidRoles = ChampRoleUtility.invalidRoles(entity);
 		List<ChampRole> compatibleChamps = champRoleRepository.findAllCompatible(idsComp, invalidRoles, invalidChamps);
-		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(compatibleChamps);
+		List<ChampRole> filterCompatible = ChampRoleUtility.uniqueRolePerChamp(entity, compatibleChamps);
+		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(filterCompatible);
 	}
 	
 	public List<ChampRoleDTO> findAll() throws Exception {

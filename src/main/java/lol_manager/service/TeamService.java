@@ -10,10 +10,12 @@ import org.springframework.util.Assert;
 import lol_manager.dto.ChampDTO;
 import lol_manager.dto.ChampRoleDTO;
 import lol_manager.dto.TeamDTO;
+import lol_manager.dto.UserDTO;
 import lol_manager.mapper.MapperManager;
 import lol_manager.model.ChampRole;
 import lol_manager.model.Champion;
 import lol_manager.model.Team;
+import lol_manager.model.User;
 import lol_manager.repository.TeamRepository;
 import lol_manager.utility.ChampRoleUtility;
 import lol_manager.validation.Validations;
@@ -60,6 +62,11 @@ public class TeamService {
 		Team team = teamRepository.findByName(name);
 		Assert.isTrue(team != null, "Team not found");
 		return MapperManager.TEAMMAPPER.dtoFromEntity(team);
+	}
+	
+	public List<UserDTO> findMembers(Long id) throws Exception {
+		List<User> users = teamRepository.findUsersByIdTeam(id);
+		return MapperManager.USERMAPPER.dtoFromEntity(users);
 	}
 	
 	public TeamDTO findByTag(String tag) throws Exception {

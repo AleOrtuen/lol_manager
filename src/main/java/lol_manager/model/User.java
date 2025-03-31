@@ -34,7 +34,10 @@ public class User {
 	@Column(name = "admin")
 	private boolean admin;
 	
-    @OneToMany(mappedBy = "idChampPool.idUser")
+	@Column(name = "p_role")
+	private String pRole;
+	
+	@OneToMany(mappedBy = "idChampPool.idUser")
     @JsonManagedReference(value = "user-champpool-reference")
     private List<ChampPool> champPools; 
     
@@ -46,10 +49,11 @@ public class User {
 		
 	}
 
-	public User(String username, String email, String password) {
+	public User(String username, String email, String password, String pRole) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
+		this.pRole = pRole;
 	}
 	
 	public List<Champion> getChampions() {
@@ -100,6 +104,14 @@ public class User {
 		this.admin = admin;
 	}
 
+    public String getpRole() {
+		return pRole;
+	}
+
+	public void setpRole(String pRole) {
+		this.pRole = pRole;
+	}
+	
 	public List<ChampPool> getChampPools() {
 		return champPools;
 	}
