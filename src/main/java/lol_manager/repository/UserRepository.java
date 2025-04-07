@@ -22,4 +22,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "JOIN TeamMember tm ON t.idTeam = tm.team.idTeam " +
             "WHERE tm.user.idUser = :userId")
      List<Team> findTeams(Long userId);
+    
+    @Modifying
+    @Query("UPDATE User u "
+            + "SET u.username = :username, u.email = :email, u.admin = :admin, u.pRole = :pRole "
+            + "WHERE u.idUser = :idUser")
+    public int updateNoPassword(@Param("username") String username,
+                                  @Param("email") String email,
+                                  @Param("admin") boolean admin,
+                                  @Param("pRole") String pRole,
+                                  @Param("idUser") Long idUser);
+
 }

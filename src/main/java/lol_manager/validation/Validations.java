@@ -26,6 +26,15 @@ public class Validations {
 		return valid;
 	}
 	
+	public static boolean validFormNoPassword(UserDTO user) {
+		boolean valid =
+				user.getEmail() != null 
+			 && validEmail(user.getEmail())
+			 && user.getUsername() != null
+			 &&	validUsername(user.getUsername());
+		return valid;
+	}
+	
 	public static boolean validUsername(String username) {
 		boolean valid =
 				username.length() >= 3

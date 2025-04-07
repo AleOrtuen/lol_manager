@@ -33,12 +33,29 @@ public class UserService {
 		return MapperManager.USERMAPPER.dtoFromEntity(userRepository.save(user));
 	}
 	
+	@Transactional
 	public UserDTO update(UserDTO u) throws Exception {
 		findById(u.getIdUser());
-		Assert.isTrue(Validations.validFormUtente(u), "Invalid form");
 		User user = MapperManager.USERMAPPER.entityFromDto(u);
-		user.setPassword(encoder.encode(u.getPassword()));
-		return MapperManager.USERMAPPER.dtoFromEntity(userRepository.save(user));
+		User entity = new User();
+		if (u.getPassword() == null) {
+			Assert.isTrue(Validations.validFormNoPassword(u), "Invalid form");
+			int update = userRepository.updateNoPassword(
+					user.getUsername(), 
+					user.getEmail(), 
+					user.isAdmin(), 
+					user.getpRole(), 
+					user.getIdUser()
+			);
+			if (update > 0) {
+				entity = MapperManager.USERMAPPER.entityFromDto(findById(user.getIdUser()));
+			};
+		} else {
+			Assert.isTrue(Validations.validFormUtente(u), "Invalid form");
+			user.setPassword(encoder.encode(u.getPassword()));
+			entity = userRepository.save(user);
+		}
+		return MapperManager.USERMAPPER.dtoFromEntity(entity);
 	}
 	
 	public void delete(Long idUser) throws Exception {
