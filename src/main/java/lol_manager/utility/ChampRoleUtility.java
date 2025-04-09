@@ -78,7 +78,7 @@ public class ChampRoleUtility {
 		            // Se è intercambiabile, possiamo considerare di rimuoverlo
 		            for (ChampRole otherChamp : withOutNewChamp) {
 		                if (!otherChamp.equals(champ) && 
-		                    otherChamp.getIdChampRole().getIdChamp() == champ.getIdChampRole().getIdChamp() &&
+		                    otherChamp.getIdChampRole().getIdChamp().equals(champ.getIdChampRole().getIdChamp()) &&
 		                    !otherChamp.getIdChampRole().getRole().equals(champ.getIdChampRole().getRole())) {
 		                    keepChamp = false;
 		                    break;
@@ -114,7 +114,7 @@ public class ChampRoleUtility {
 	    	boolean uniqueRoleChamp = true;
 	    	
 	    	for (ChampRole unique : currentTeam) {
-	    		if(champ.getIdChampRole().getIdChamp() == unique.getIdChampRole().getIdChamp() &&
+	    		if(champ.getIdChampRole().getIdChamp().equals(unique.getIdChampRole().getIdChamp()) &&
 	    		  !champ.getIdChampRole().getRole().equals(unique.getIdChampRole().getRole())) {
 	    			uniqueRoleChamp = false;
 	    			break;
@@ -160,9 +160,8 @@ public class ChampRoleUtility {
 		
 	    for (ChampRole role : champRoles) {
 	    	boolean uniqueRoleChamp = true;
-	    	
 	    	for (ChampRole unique : champRoles) {
-	    		if(role.getIdChampRole().getIdChamp() == unique.getIdChampRole().getIdChamp() &&
+	    		if(role.getIdChampRole().getIdChamp().equals(unique.getIdChampRole().getIdChamp()) &&
 	    		  !role.getIdChampRole().getRole().equals(unique.getIdChampRole().getRole())) {
 	    			uniqueRoleChamp = false;
 	    			break;
