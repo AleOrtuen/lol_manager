@@ -29,7 +29,7 @@ public class Team {
 	@Column(name = "tag", nullable = false)
 	private String tag;
 	
-	@Column(name = "img", nullable = false)
+	@Column(name = "img")
 	private String img;
 
     @OneToMany(mappedBy = "idTeamMember.idTeam")
