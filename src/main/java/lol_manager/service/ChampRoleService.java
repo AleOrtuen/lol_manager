@@ -1,6 +1,9 @@
 package lol_manager.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,7 +82,12 @@ public class ChampRoleService {
 		List<Long> idsComp = ChampRoleUtility.validIdComps(entity);
 		List<Long> invalidChamps = ChampRoleUtility.invalidChamps(entity);
 		List<String> invalidRoles = ChampRoleUtility.invalidRoles(entity);
-		List<ChampRole> compatibleChamps = champRoleRepository.findAllCompatible(idsComp, invalidRoles, invalidChamps);
+		List<String> flexTakenRoles = ChampRoleUtility.flexTakenRoles(entity);
+	    Set<String> uniqueTakenRoles = new HashSet<>();	    
+	    uniqueTakenRoles.addAll(invalidRoles);	    
+	    uniqueTakenRoles.addAll(flexTakenRoles);
+	    List<String> takenRoles = new ArrayList<>(uniqueTakenRoles);
+		List<ChampRole> compatibleChamps = champRoleRepository.findAllCompatible(idsComp, takenRoles, invalidChamps);
 		List<ChampRole> filterCompatible = ChampRoleUtility.uniqueRolePerChamp(entity, compatibleChamps);
 		return MapperManager.CHAMPROLEMAPPER.dtoFromEntity(filterCompatible);
 	}

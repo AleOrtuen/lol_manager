@@ -1,8 +1,11 @@
 package lol_manager.utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -175,6 +178,52 @@ public class ChampRoleUtility {
 		
 		List<String> roles = new ArrayList<>(takenRoles);
 		return roles;
+	}
+	
+	public static List<String> flexTakenRoles(List<ChampRole> champRoles) {
+	    // Mappa: Role -> Set di Champion IDs che possono giocare quel ruolo
+	    Map<String, Set<Long>> roleToChamps = new HashMap<>();
+	    
+	    // Raccogli tutti i champion per ogni ruolo
+	    for (ChampRole cr : champRoles) {
+	        roleToChamps.computeIfAbsent(cr.getIdChampRole().getRole(), k -> new HashSet<>()).add(cr.getIdChampRole().getIdChamp());
+	    }
+	    
+	    // Per ogni champion, trova i ruoli che può giocare
+	    Map<Long, Set<String>> champToRoles = new HashMap<>();
+	    for (ChampRole cr : champRoles) {
+	        champToRoles.computeIfAbsent(cr.getIdChampRole().getIdChamp(), k -> new HashSet<>()).add(cr.getIdChampRole().getRole());
+	    }
+	    
+	    // Identifica i gruppi di champion che hanno esattamente gli stessi ruoli
+	    Map<Set<String>, Set<Long>> ruoliToChamps = new HashMap<>();
+	    
+	    for (Map.Entry<Long, Set<String>> entry : champToRoles.entrySet()) {
+	        Long champId = entry.getKey();
+	        Set<String> roles = entry.getValue();
+	        
+	        // Converti il set di ruoli in una lista ordinata per consistenza nell'uso come chiave
+	        List<String> sortedRoles = new ArrayList<>(roles);
+	        Collections.sort(sortedRoles);
+	        Set<String> ruoliSet = new HashSet<>(sortedRoles);
+	        
+	        ruoliToChamps.computeIfAbsent(ruoliSet, k -> new HashSet<>()).add(champId);
+	    }
+	    
+	    // Trova i ruoli bloccati
+	    List<String> ruoliBloccati = new ArrayList<>();
+	    
+	    for (Map.Entry<Set<String>, Set<Long>> entry : ruoliToChamps.entrySet()) {
+	        Set<String> ruoli = entry.getKey();
+	        Set<Long> champs = entry.getValue();
+	        
+	        // Se ci sono almeno 2 ruoli e almeno 2 champion che possono ricoprirli in modo intercambiabile
+	        if (ruoli.size() >= 2 && champs.size() >= 2) {
+	            ruoliBloccati.addAll(ruoli);
+	        }
+	    }
+	    
+	    return ruoliBloccati;
 	}
 	
 	// RITORNA UNA LISTA DI INVALID CHAMPS CHE SONO GIA'STATI PICKATI 
