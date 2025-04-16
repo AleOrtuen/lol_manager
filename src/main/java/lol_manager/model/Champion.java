@@ -2,7 +2,7 @@ package lol_manager.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,8 +29,12 @@ public class Champion {
 	private String img;
 
     @OneToMany(mappedBy = "idChampPool.idChamp", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonManagedReference(value = "champpool-champ-reference")
     private List<ChampPool> champPools;
+    
+    @OneToMany(mappedBy = "idChampRole.idChamp", fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "champrole-champ-reference")
+    private List<ChampRole> champRoles;
     
 	public Champion() {
 		
@@ -71,6 +75,14 @@ public class Champion {
 
 	public void setChampPools(List<ChampPool> champPools) {
 		this.champPools = champPools;
+	}
+
+	public List<ChampRole> getChampRoles() {
+		return champRoles;
+	}
+
+	public void setChampRoles(List<ChampRole> champRoles) {
+		this.champRoles = champRoles;
 	}
 	
 	

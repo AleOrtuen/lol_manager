@@ -1,7 +1,6 @@
 package lol_manager.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -19,13 +18,13 @@ public class ChampPool {
 	private ChampPoolEmbedded idChampPool = new ChampPoolEmbedded();
 	
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference(value = "user-champpool-reference")
     @MapsId("idUser")
     @JoinColumn(name = "id_user", insertable = false, updatable = false)
 	private User user;
 	
     @ManyToOne
-    @JsonManagedReference
+    @JsonBackReference(value = "champpool-champ-reference")
     @MapsId("idChamp")
     @JoinColumn(name = "id_champ", insertable = false, updatable = false)
 	private Champion champ;
