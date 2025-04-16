@@ -41,7 +41,7 @@ public class SecurityConfig {
         // ⬅️ Aggiungi qui i domini autorizzati
         config.setAllowedOrigins(List.of(
             "http://localhost:5173",
-            "https://lolmanager.onrender.com"
+            "https://loltm.onrender.com"
         ));
         
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
