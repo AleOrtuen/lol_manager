@@ -84,7 +84,7 @@ public class Validations {
 	public static boolean validTeam(TeamDTO t) {
 		boolean valid =
 				t.getName() != null
-			&&  t.getName().length() >= 3
+			&&  t.getName().length() >= 2
 			&&  t.getName().length() <= 50
 			&&  t.getTag() != null
 			&&  t.getTag().length() >= 2
