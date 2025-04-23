@@ -19,4 +19,5 @@ LABEL org.opencontainers.image.authors="Alessio Cappelletto"
 COPY --from=build /app/target/lol_manager-0.0.1-SNAPSHOT.jar /lol_manager-0.0.1-SNAPSHOT.jar
 
 # Avvia il Cloud SQL Proxy e poi il tuo applicativo
-ENTRYPOINT ["sh", "-c", "cloud_sql_proxy -dir=/cloudsql -credential_file=/etc/credentials.json & java -jar /lol_manager-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["sh", "-c", "cloud_sql_proxy -dir=/cloudsql & exec java -jar /lol_manager-0.0.1-SNAPSHOT.jar"]
+
