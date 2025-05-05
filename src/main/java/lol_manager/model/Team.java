@@ -39,6 +39,15 @@ public class Team {
     @OneToMany(mappedBy = "team") 
     private List<TeamComp> teamComps;
     
+    @OneToMany(mappedBy = "team1")
+    private List<Game> gameTeam1;
+    
+    @OneToMany(mappedBy = "team2")
+    private List<Game> gameTeam2;
+    
+    @OneToMany(mappedBy = "winner")
+    private List<Game> winner;
+    
 	public Team() {
 		
 	}

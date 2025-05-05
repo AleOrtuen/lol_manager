@@ -3,11 +3,14 @@ package lol_manager.validation;
 import lol_manager.dto.ChampDTO;
 import lol_manager.dto.ChampPoolDTO;
 import lol_manager.dto.ChampRoleDTO;
+import lol_manager.dto.DraftDTO;
+import lol_manager.dto.GameDTO;
 import lol_manager.dto.TeamCompDTO;
 import lol_manager.dto.TeamDTO;
 import lol_manager.dto.TeamMemberDTO;
 import lol_manager.dto.UserDTO;
 import lol_manager.enums.ChampRoleEnum;
+import lol_manager.enums.GameEnum;
 
 public class Validations {
 
@@ -126,5 +129,31 @@ public class Validations {
 	    return valid;
 	}
 	
+	// VALIDAZIONE GAME
+	public static boolean validGame(GameDTO gameDto) {
+		boolean valid = false;
+		
+		try {
+			GameEnum style = GameEnum.valueOf(gameDto.getStyle());
+			valid =
+					gameDto.getTeam1().getIdTeam() != null &&
+					gameDto.getTeam2().getIdTeam() != null &&
+					style != null;
+			
+		} catch (IllegalArgumentException e) {
+			valid = false;
+		}
+		return valid;
+	}
 	
+	// VALIDAZIONE DRAFT
+	public static boolean validDraft(DraftDTO draftDto) {
+		boolean valid = false;
+		
+		valid = 
+				draftDto.getGame().getIdGame() != null &&
+				draftDto.getTeamBlue().getIdTeam() != null &&
+				draftDto.getTeamRed().getIdTeam() != null;
+		return valid;
+	}
 }

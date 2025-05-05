@@ -34,7 +34,7 @@ public class Game {
     @Column(name = "fearless")
     private boolean fearless;
     
-    @Column(name = "date, insertable = false, updatable = false")
+    @Column(name = "date", insertable = false, updatable = false)
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime date;
     

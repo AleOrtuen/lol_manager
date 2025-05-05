@@ -10,5 +10,6 @@ public class MapperManager {
 	public static final TeamCompMapper TEAMCOMPMAPPER = new TeamCompMapper();
 	public static final ChampRoleMapper CHAMPROLEMAPPER = new ChampRoleMapper();
 	public static final GameMapper GAMEMAPPER = new GameMapper();
+	public static final DraftMapper DRAFTMAPPER = new DraftMapper();
 	
 }
