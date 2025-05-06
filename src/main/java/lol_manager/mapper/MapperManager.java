@@ -11,5 +11,6 @@ public class MapperManager {
 	public static final ChampRoleMapper CHAMPROLEMAPPER = new ChampRoleMapper();
 	public static final GameMapper GAMEMAPPER = new GameMapper();
 	public static final DraftMapper DRAFTMAPPER = new DraftMapper();
-	
+	public static final BanMapper BANMAPPER = new BanMapper();
+	public static final PickMapper PICKMAPPER = new PickMapper();
 }

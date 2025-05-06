@@ -9,9 +9,15 @@ public class DraftMapper extends BasicMapper<Draft, DraftDTO> {
 	public Draft entityFromDto(DraftDTO dto) throws Exception {
 		Draft entity = new Draft();
 		entity.setIdDraft(dto.getIdDraft());
-		entity.setGame(MapperManager.GAMEMAPPER.entityFromDto(dto.getGame()));
-		entity.setTeamBlue(MapperManager.TEAMMAPPER.entityFromDto(dto.getTeamBlue()));
+		if (dto.getGame() != null) {
+			entity.setGame(MapperManager.GAMEMAPPER.entityFromDto(dto.getGame()));
+		}
+		if (dto.getTeamBlue() != null) {
+			entity.setTeamBlue(MapperManager.TEAMMAPPER.entityFromDto(dto.getTeamBlue()));
+		}
+		if (dto.getTeamRed() != null) {
 		entity.setTeamRed(MapperManager.TEAMMAPPER.entityFromDto(dto.getTeamRed()));
+		}
 		if (dto.getWinner() != null) {
 			entity.setWinner(MapperManager.TEAMMAPPER.entityFromDto(dto.getWinner()));
 		}
@@ -23,9 +29,15 @@ public class DraftMapper extends BasicMapper<Draft, DraftDTO> {
 	public DraftDTO dtoFromEntity(Draft entity) throws Exception {
 		DraftDTO dto = new DraftDTO();
 		dto.setIdDraft(entity.getIdDraft());
-		dto.setGame(MapperManager.GAMEMAPPER.dtoFromEntity(entity.getGame()));
-		dto.setTeamBlue(MapperManager.TEAMMAPPER.dtoFromEntity(entity.getTeamBlue()));
-		dto.setTeamRed(MapperManager.TEAMMAPPER.dtoFromEntity(entity.getTeamRed()));
+		if (entity.getGame() != null) {
+			dto.setGame(MapperManager.GAMEMAPPER.dtoFromEntity(entity.getGame()));
+		}
+		if (entity.getTeamBlue() != null) {
+			dto.setTeamBlue(MapperManager.TEAMMAPPER.dtoFromEntity(entity.getTeamBlue()));
+		}
+		if (entity.getTeamRed() != null) {
+			dto.setTeamRed(MapperManager.TEAMMAPPER.dtoFromEntity(entity.getTeamRed()));
+		}
 		if (entity.getWinner() != null) {
 			dto.setWinner(MapperManager.TEAMMAPPER.dtoFromEntity(entity.getWinner()));
 		}

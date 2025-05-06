@@ -27,17 +27,17 @@ public class Pick {
 
     @ManyToOne
     @JoinColumn(name = "pick")
-    private Champion champion;
+    private Champion pick;
 
     public Pick() {
     	
     }
     
-	public Pick(Draft draft, String side, Champion champion) {
+	public Pick(Draft draft, String side, Champion pick) {
 		super();
 		this.draft = draft;
 		this.side = side;
-		this.champion = champion;
+		this.pick = pick;
 	}
 
 	public Long getIdPick() {
@@ -64,12 +64,12 @@ public class Pick {
 		this.side = side;
 	}
 
-	public Champion getChampion() {
-		return champion;
+	public Champion getPick() {
+		return pick;
 	}
 
-	public void setChampion(Champion champion) {
-		this.champion = champion;
+	public void setPick(Champion pick) {
+		this.pick = pick;
 	}
     
   

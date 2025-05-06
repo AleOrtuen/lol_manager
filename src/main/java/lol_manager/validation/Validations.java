@@ -1,16 +1,19 @@
 package lol_manager.validation;
 
+import lol_manager.dto.BanDTO;
 import lol_manager.dto.ChampDTO;
 import lol_manager.dto.ChampPoolDTO;
 import lol_manager.dto.ChampRoleDTO;
 import lol_manager.dto.DraftDTO;
 import lol_manager.dto.GameDTO;
+import lol_manager.dto.PickDTO;
 import lol_manager.dto.TeamCompDTO;
 import lol_manager.dto.TeamDTO;
 import lol_manager.dto.TeamMemberDTO;
 import lol_manager.dto.UserDTO;
 import lol_manager.enums.ChampRoleEnum;
 import lol_manager.enums.GameEnum;
+import lol_manager.enums.SideSelectionEnum;
 
 public class Validations {
 
@@ -154,6 +157,40 @@ public class Validations {
 				draftDto.getGame().getIdGame() != null &&
 				draftDto.getTeamBlue().getIdTeam() != null &&
 				draftDto.getTeamRed().getIdTeam() != null;
+		return valid;
+	}
+	
+	// VALIDAZIONE BAN
+	public static boolean isValidBan(BanDTO banDto) {
+		boolean valid = false;
+		
+		try {
+			SideSelectionEnum side = SideSelectionEnum.valueOf(banDto.getSide());
+			valid = 
+					banDto.getDraft().getIdDraft() != null &&
+					side != null &&
+					banDto.getBan().getIdChamp() != null
+					;
+		} catch (IllegalArgumentException e) {
+			valid = false;
+		}
+		return valid;
+	}
+	
+	// VALIDAZIONE PICK
+	public static boolean isValidPick(PickDTO pickDto) {
+		boolean valid = false;
+		
+		try {
+			SideSelectionEnum side = SideSelectionEnum.valueOf(pickDto.getSide());
+			valid = 
+					pickDto.getDraft().getIdDraft() != null &&
+					side != null &&
+					pickDto.getPick().getIdChamp() != null
+					;
+		} catch (IllegalArgumentException e) {
+			valid = false;
+		}
 		return valid;
 	}
 }

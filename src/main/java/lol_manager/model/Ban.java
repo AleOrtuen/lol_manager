@@ -27,16 +27,16 @@ public class Ban {
 
     @ManyToOne
     @JoinColumn(name = "ban")
-    private Champion champion;
+    private Champion ban;
 
     public Ban() {
     	
     }
     
-	public Ban(Draft draft, String side, Champion champion) {
+	public Ban(Draft draft, String side, Champion ban) {
 		this.draft = draft;
 		this.side = side;
-		this.champion = champion;
+		this.ban = ban;
 	}
 
 	public Long getIdBan() {
@@ -63,12 +63,12 @@ public class Ban {
 		this.side = side;
 	}
 
-	public Champion getChampion() {
-		return champion;
+	public Champion getBan() {
+		return ban;
 	}
 
-	public void setChampion(Champion champion) {
-		this.champion = champion;
+	public void setBan(Champion ban) {
+		this.ban = ban;
 	}
     
     

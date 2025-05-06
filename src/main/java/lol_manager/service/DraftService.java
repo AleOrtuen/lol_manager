@@ -33,8 +33,8 @@ public class DraftService {
 	}
 	
 	public DraftDTO update(DraftDTO draftDto) throws Exception {
-		findById(draftDto.getIdDraft());
 		Assert.isTrue(Validations.validDraft(draftDto), "Invalid draft form");
+		findById(draftDto.getIdDraft());
 		Draft draft = MapperManager.DRAFTMAPPER.entityFromDto(draftDto);
 		teamService.findById(draft.getTeamBlue().getIdTeam());
 		teamService.findById(draft.getTeamRed().getIdTeam());
@@ -59,14 +59,17 @@ public class DraftService {
 	}
 	
 	public List<DraftDTO> findByIdGame(Long idGame) throws Exception {
+		gameService.findById(idGame);
 		List<Draft> drafts = draftRepository.findByGameIdGame(idGame);
-//		Assert.isTrue(draft.isPresent(), "Draft not found");
+		Assert.isTrue(drafts.size() != 0, "Drafts not found");
 		return MapperManager.DRAFTMAPPER.dtoFromEntity(drafts);
 	}
 	
 	public List<DraftDTO> findByIdTeam(Long idTeam) throws Exception {
 		teamService.findById(idTeam);
-		return MapperManager.DRAFTMAPPER.dtoFromEntity(draftRepository.findByIdTeam(idTeam));
+		List<Draft> drafts = draftRepository.findByIdTeam(idTeam);
+		Assert.isTrue(drafts.size() != 0, "Drafts not found");
+		return MapperManager.DRAFTMAPPER.dtoFromEntity(drafts);
 	}
 	
 	public DraftDTO setWinner(DraftDTO draftDto) throws Exception {

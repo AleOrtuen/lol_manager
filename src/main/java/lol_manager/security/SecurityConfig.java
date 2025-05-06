@@ -29,7 +29,9 @@ public class SecurityConfig {
                     "/team-comp/**",
                     "/champ-role/**",
                     "/game/**",
-                    "/draft/**"
+                    "/draft/**",
+                    "/ban/**",
+                    "/pick/**"
                 ).permitAll();
                 auth.anyRequest().authenticated();
             })
