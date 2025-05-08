@@ -18,7 +18,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
             .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults()) // ⬅️ ATTIVA CORS qui!
+            .cors(Customizer.withDefaults()) // ⬅️ CORS abilitato
             .authorizeHttpRequests(auth -> {
                 auth.requestMatchers(
                     "/user/**",
@@ -31,7 +31,11 @@ public class SecurityConfig {
                     "/game/**",
                     "/draft/**",
                     "/ban/**",
-                    "/pick/**"
+                    "/pick/**",
+                    "/game-room/**",
+                    "/ws/**",            
+                    "/topic/**",        
+                    "/app/**"            
                 ).permitAll();
                 auth.anyRequest().authenticated();
             })

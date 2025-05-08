@@ -78,11 +78,26 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
+		
+		<!-- google cloud-->
 		<dependency>
     		<groupId>com.google.cloud.sql</groupId>
     		<artifactId>mysql-socket-factory-connector-j-8</artifactId>
     		<version>1.15.0</version>
 		</dependency>
+		
+		<!-- WebSocket-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
+		<!-- Jackson (per serializzazione JSON) -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<plugins>
