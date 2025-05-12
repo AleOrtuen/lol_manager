@@ -32,6 +32,9 @@ public class Team {
 	@Column(name = "img")
 	private String img;
 
+	@Column(name = "guest")
+	private boolean guest;
+	
     @OneToMany(mappedBy = "idTeamMember.idTeam")
     @JsonManagedReference(value = "team-teammember-reference")
     private List<TeamMember> teamMembers;
@@ -79,6 +82,15 @@ public class Team {
 
 	public void setImg(String img) {
 		this.img = img;
+	}
+
+	
+	public boolean isGuest() {
+		return guest;
+	}
+
+	public void setGuest(boolean guest) {
+		this.guest = guest;
 	}
 
 	public List<TeamMember> getTeamMembers() {

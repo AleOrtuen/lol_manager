@@ -22,9 +22,13 @@ public class GameRoomService {
 	@Autowired
 	private GameService gameService;
 	
-	public GameRoomDTO save() throws Exception {
+	public GameRoomDTO save(GameRoomDTO gameRoomDto) throws Exception {
 		String idRoom = UUID.randomUUID().toString();
 		GameRoom room = new GameRoom(idRoom);
+		if (gameRoomDto.getGame().getIdGame() != null) {
+			gameService.findById(gameRoomDto.getGame().getIdGame());
+			room.setGame(MapperManager.GAMEMAPPER.entityFromDto(gameRoomDto.getGame()));
+		}
 		return MapperManager.GAMEROOMMAPPER.dtoFromEntity(gameRoomRepository.save(room));
 	}
 	

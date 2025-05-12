@@ -30,10 +30,10 @@ public class GameRoomController {
 	private GameRoomService gameRoomService;
 	
 	@PostMapping("/save")
-	public ResponseEntity<ResponseDTO> save() {
+	public ResponseEntity<ResponseDTO> save(@RequestBody GameRoomDTO gameRoomDto) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(gameRoomService.save());
+			response.setObjResponse(gameRoomService.save(gameRoomDto));
 			response.setResponse("Room created");
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {

@@ -139,8 +139,6 @@ public class Validations {
 		try {
 			GameEnum style = GameEnum.valueOf(gameDto.getStyle());
 			valid =
-					gameDto.getTeam1().getIdTeam() != null &&
-					gameDto.getTeam2().getIdTeam() != null &&
 					style != null;
 			
 		} catch (IllegalArgumentException e) {

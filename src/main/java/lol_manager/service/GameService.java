@@ -25,8 +25,12 @@ public class GameService {
 	public GameDTO save(GameDTO gameDto) throws Exception {
 		Assert.isTrue(Validations.validGame(gameDto), "Invalid game form");
 		Game game = MapperManager.GAMEMAPPER.entityFromDto(gameDto);
-		teamService.findById(game.getTeam1().getIdTeam());
-		teamService.findById(game.getTeam2().getIdTeam());		
+		if (game.getTeam1() != null) {
+			teamService.findById(game.getTeam1().getIdTeam());
+		}
+		if (game.getTeam2() != null) {
+		teamService.findById(game.getTeam2().getIdTeam());	
+		}
 		return MapperManager.GAMEMAPPER.dtoFromEntity(gameRepository.save(game));
 	}
 	
@@ -34,8 +38,12 @@ public class GameService {
 		findById(gameDto.getIdGame());
 		Assert.isTrue(Validations.validGame(gameDto), "Invalid game form");
 		Game game = MapperManager.GAMEMAPPER.entityFromDto(gameDto);
-		teamService.findById(game.getTeam1().getIdTeam());
-		teamService.findById(game.getTeam2().getIdTeam());
+		if (game.getTeam1() != null) {
+			teamService.findById(game.getTeam1().getIdTeam());
+		}
+		if (game.getTeam2() != null) {
+		teamService.findById(game.getTeam2().getIdTeam());	
+		}
 		return MapperManager.GAMEMAPPER.dtoFromEntity(gameRepository.save(game));
 	}
 	

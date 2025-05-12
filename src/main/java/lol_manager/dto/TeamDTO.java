@@ -6,6 +6,7 @@ public class TeamDTO {
 	private String name;
 	private String tag;
 	private String img;
+	private boolean guest;
 	
 	public Long getIdTeam() {
 		return idTeam;
@@ -30,6 +31,12 @@ public class TeamDTO {
 	}
 	public void setImg(String img) {
 		this.img = img;
+	}
+	public boolean isGuest() {
+		return guest;
+	}
+	public void setGuest(boolean guest) {
+		this.guest = guest;
 	}
 	
 	

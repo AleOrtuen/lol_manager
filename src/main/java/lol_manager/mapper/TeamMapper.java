@@ -12,6 +12,7 @@ public class TeamMapper extends BasicMapper<Team, TeamDTO> {
 		entity.setName(dto.getName());
 		entity.setTag(dto.getTag());
 		entity.setImg(dto.getImg());
+		entity.setGuest(dto.isGuest());
 		return entity;
 	}
 
@@ -22,6 +23,7 @@ public class TeamMapper extends BasicMapper<Team, TeamDTO> {
 		dto.setName(entity.getName());
 		dto.setTag(entity.getTag());
 		dto.setImg(entity.getImg());
+		dto.setGuest(entity.isGuest());
 		return dto;
 	}
 

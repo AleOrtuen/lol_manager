@@ -5,6 +5,9 @@ public class WSMessageDTO {
 	private String idRoom;
 	private String side;
 	private Long idChamp;
+	private String type;
+	private String sender;
+	private Long startTime;
 	
 	public String getIdRoom() {
 		return idRoom;
@@ -23,6 +26,24 @@ public class WSMessageDTO {
 	}
 	public void setIdChamp(Long idChamp) {
 		this.idChamp = idChamp;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getSender() {
+		return sender;
+	}
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+	public Long getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(Long startTime) {
+		this.startTime = startTime;
 	}
 	
 	
