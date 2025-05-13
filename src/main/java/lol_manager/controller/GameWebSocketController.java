@@ -26,6 +26,8 @@ public class GameWebSocketController {
 //	            return webSocketService.handleBan(idRoom, message);
 	        case "TIMER_REQUEST":
 	            return webSocketService.startTimer(idRoom);
+	        case "TIMER_STATUS_REQUEST":
+	        	return webSocketService.getCurrentTimer(idRoom);
 	        default:
 	            throw new IllegalArgumentException("Unknown action type: " + message.getType());
 	    }
