@@ -1,5 +1,8 @@
 package lol_manager.controller;
 
+import lol_manager.dto.GameRoomDTO;
+import lol_manager.service.GameRoomService;
+import lol_manager.service.WebSocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,12 @@ public class GameController {
 	
 	@Autowired
 	private GameService gameService;
+
+	@Autowired
+	private GameRoomService gameRoomService;
+
+	@Autowired
+	private WebSocketService webSocketService;
 	
 	@PostMapping("/save")
 	public ResponseEntity<ResponseDTO> save(@RequestBody GameDTO gameDto) {
@@ -51,9 +60,12 @@ public class GameController {
 	public ResponseEntity<ResponseDTO> update(@RequestBody GameDTO gameDto) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(gameService.update(gameDto));
+			GameDTO updatedGame = gameService.update(gameDto);
+			response.setObjResponse(updatedGame);
 			response.setResponse("Game updated");
-			return ResponseEntity.status(HttpStatus.OK).body(response);			
+			GameRoomDTO gameRoomDto = gameRoomService.findByIdGame(updatedGame.getIdGame());
+			webSocketService.notifyGameUpdate(gameRoomDto.getIdRoom(), updatedGame);
+			return ResponseEntity.status(HttpStatus.OK).body(response);
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);
 	    	response.setResponse(i.getMessage());

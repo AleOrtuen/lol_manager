@@ -8,6 +8,7 @@ public class WSMessageDTO {
 	private String type;
 	private String sender;
 	private Long startTime;
+	private GameDTO game;
 	
 	public String getIdRoom() {
 		return idRoom;
@@ -45,6 +46,10 @@ public class WSMessageDTO {
 	public void setStartTime(Long startTime) {
 		this.startTime = startTime;
 	}
-	
-	
+	public GameDTO getGame() {
+		return game;
+	}
+	public void setGame(GameDTO game) {
+		this.game = game;
+	}
 }
