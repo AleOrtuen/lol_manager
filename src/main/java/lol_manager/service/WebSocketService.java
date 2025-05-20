@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lol_manager.dto.GameDTO;
+import lol_manager.enums.SideSelectionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,7 +20,8 @@ public class WebSocketService {
 
 	private static final long TIMER_DURATION_MS = 30_000;
 	private Map<String, Long> timers = new ConcurrentHashMap<>();
-	
+    private Map<String, WSMessageDTO> side = new ConcurrentHashMap<>();
+
     public WSMessageDTO handlePick(String idRoom, WSMessageDTO message) {
 
     	
@@ -56,7 +58,15 @@ public class WebSocketService {
     }
 
     public WSMessageDTO sideSelection(String idRoom, WSMessageDTO message) {
+
+            side.put(idRoom, message);
+
         WSMessageDTO returnMessage = new WSMessageDTO();
+        returnMessage.setType("SIDE_SELECTION");
+        returnMessage.setIdRoom(idRoom);
+        returnMessage.setSide(message.getSide());
+        returnMessage.setSender(message.getSender());
+
         return returnMessage;
     }
 
