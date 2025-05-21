@@ -22,8 +22,8 @@ public class GameWebSocketController {
 	    switch (message.getType()) {
 	        case "PICK":
 	            return webSocketService.handlePick(idRoom, message);
-			case "SIDE_SELECTION":
-				return webSocketService.sideSelection(idRoom, message);
+//			case "SIDE_SELECTION":
+//				return webSocketService.sideSelection(idRoom, message);
 //	        case "BAN":
 //	            return webSocketService.handleBan(idRoom, message);
 	        case "TIMER_REQUEST":

@@ -1,5 +1,8 @@
 package lol_manager.controller;
 
+import lol_manager.dto.GameRoomDTO;
+import lol_manager.service.GameRoomService;
+import lol_manager.service.WebSocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +31,22 @@ public class DraftController {
 	
 	@Autowired
 	private DraftService draftService;
+
+	@Autowired
+	private GameRoomService gameRoomService;
+
+	@Autowired
+	private WebSocketService webSocketService;
 	
 	@PostMapping("/save")
 	public ResponseEntity<ResponseDTO> save(@RequestBody DraftDTO draftDto) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(draftService.save(draftDto));
+			DraftDTO draft = draftService.save(draftDto);
+			response.setObjResponse(draft);
 			response.setResponse("Draft saved");
+			GameRoomDTO gameRoomDTO = gameRoomService.findByIdGame(draft.getGame().getIdGame());
+			webSocketService.notifyDraftUpdate(gameRoomDTO.getIdRoom(), draft);
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);

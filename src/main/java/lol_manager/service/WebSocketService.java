@@ -3,6 +3,7 @@ package lol_manager.service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lol_manager.dto.DraftDTO;
 import lol_manager.dto.GameDTO;
 import lol_manager.enums.SideSelectionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class WebSocketService {
 
 	private static final long TIMER_DURATION_MS = 30_000;
 	private Map<String, Long> timers = new ConcurrentHashMap<>();
-    private Map<String, WSMessageDTO> side = new ConcurrentHashMap<>();
+//    private Map<String, WSMessageDTO> side = new ConcurrentHashMap<>();
 
     public WSMessageDTO handlePick(String idRoom, WSMessageDTO message) {
 
@@ -31,7 +32,7 @@ public class WebSocketService {
     public WSMessageDTO startTimer(String idRoom) {
         long startTime = System.currentTimeMillis();
         timers.put(idRoom, startTime);
-        
+
         WSMessageDTO timerMsg = new WSMessageDTO();
         timerMsg.setType("TIMER_START");
         timerMsg.setIdRoom(idRoom);
@@ -57,24 +58,21 @@ public class WebSocketService {
         timers.entrySet().removeIf(entry -> now > entry.getValue() + TIMER_DURATION_MS + buffer);
     }
 
-    public WSMessageDTO sideSelection(String idRoom, WSMessageDTO message) {
-
-            side.put(idRoom, message);
-
-        WSMessageDTO returnMessage = new WSMessageDTO();
-        returnMessage.setType("SIDE_SELECTION");
-        returnMessage.setIdRoom(idRoom);
-        returnMessage.setSide(message.getSide());
-        returnMessage.setSender(message.getSender());
-
-        return returnMessage;
-    }
 
     public void notifyGameUpdate(String idRoom, GameDTO game) {
         WSMessageDTO updateMessage = new WSMessageDTO();
         updateMessage.setIdRoom(idRoom);
         updateMessage.setType("GAME_UPDATE");
         updateMessage.setGame(game);
+
+        messagingTemplate.convertAndSend("/topic/game/" + idRoom, updateMessage);
+    }
+
+    public void notifyDraftUpdate(String idRoom, DraftDTO draft) {
+        WSMessageDTO updateMessage = new WSMessageDTO();
+        updateMessage.setIdRoom(idRoom);
+        updateMessage.setType("DRAFT_UPDATE");
+        updateMessage.setDraft(draft);
 
         messagingTemplate.convertAndSend("/topic/game/" + idRoom, updateMessage);
     }

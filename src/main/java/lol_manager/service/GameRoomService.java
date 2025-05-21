@@ -55,11 +55,13 @@ public class GameRoomService {
 	public GameRoomDTO findById(String idRoom) throws Exception {
 		Optional<GameRoom> room = gameRoomRepository.findById(idRoom);
 		Assert.isTrue(room.isPresent(), "Room not found");
-		return MapperManager.GAMEROOMMAPPER.dtoFromEntity(gameRoomRepository.save(room.get()));
+		return MapperManager.GAMEROOMMAPPER.dtoFromEntity(room.get());
 	}
 	
 	public GameRoomDTO findByIdGame(Long idGame) throws Exception {
 		gameService.findById(idGame);
-		return MapperManager.GAMEROOMMAPPER.dtoFromEntity(gameRoomRepository.findByGameIdGame(idGame));
+		GameRoom room = gameRoomRepository.findByGameIdGame(idGame);
+		Assert.isTrue(room != null, "Room not found");
+		return MapperManager.GAMEROOMMAPPER.dtoFromEntity(room);
 	}
 }
