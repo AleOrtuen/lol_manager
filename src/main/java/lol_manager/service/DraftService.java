@@ -24,6 +24,9 @@ public class DraftService {
 
 	@Autowired
 	private TeamService teamService;
+
+	@Autowired
+	private GameRoomService gameRoomService;
 	
 	public DraftDTO save(DraftDTO draftDto) throws Exception {
 		Assert.isTrue(Validations.validDraft(draftDto), "Invalid draft form");
@@ -71,7 +74,14 @@ public class DraftService {
 		Assert.isTrue(drafts.size() != 0, "Drafts not found");
 		return MapperManager.DRAFTMAPPER.dtoFromEntity(drafts);
 	}
-	
+
+	public DraftDTO findOpenDraftByRoomId(String idRoom) throws Exception {
+		gameRoomService.findById(idRoom);
+		Draft draft = draftRepository.findOpenDraftByRoomId(idRoom);
+		Assert.isTrue(draft != null, "Draft not found");
+		return MapperManager.DRAFTMAPPER.dtoFromEntity(draft);
+	}
+
 	public DraftDTO setWinner(DraftDTO draftDto) throws Exception {
 		Assert.isTrue(draftDto.getWinner() != null, "No winner idTeam");
 		teamService.findById(draftDto.getWinner().getIdTeam());

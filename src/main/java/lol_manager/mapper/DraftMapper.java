@@ -22,6 +22,7 @@ public class DraftMapper extends BasicMapper<Draft, DraftDTO> {
 			entity.setWinner(MapperManager.TEAMMAPPER.entityFromDto(dto.getWinner()));
 		}
 		entity.setClosed(dto.isClosed());
+		entity.setReady(dto.isReady());
 		return entity;
 	}
 
@@ -42,6 +43,7 @@ public class DraftMapper extends BasicMapper<Draft, DraftDTO> {
 			dto.setWinner(MapperManager.TEAMMAPPER.dtoFromEntity(entity.getWinner()));
 		}
 		dto.setClosed(entity.isClosed());
+		dto.setReady(entity.isReady());
 		return dto;
 	}
 

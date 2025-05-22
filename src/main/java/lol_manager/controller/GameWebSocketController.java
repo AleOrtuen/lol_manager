@@ -18,14 +18,12 @@ public class GameWebSocketController {
 	
 	@MessageMapping("/game/{idRoom}/action")
 	@SendTo("/topic/game/{idRoom}")
-	public WSMessageDTO handleGameAction(@DestinationVariable String idRoom, @Payload WSMessageDTO message) {
+	public WSMessageDTO handleGameAction(@DestinationVariable String idRoom, @Payload WSMessageDTO message) throws Exception {
 	    switch (message.getType()) {
 	        case "PICK":
 	            return webSocketService.handlePick(idRoom, message);
-//			case "SIDE_SELECTION":
-//				return webSocketService.sideSelection(idRoom, message);
-//	        case "BAN":
-//	            return webSocketService.handleBan(idRoom, message);
+	        case "READY_CHECK":
+	            return webSocketService.readyCheck(idRoom, message);
 	        case "TIMER_REQUEST":
 	            return webSocketService.startTimer(idRoom);
 	        case "TIMER_STATUS_REQUEST":

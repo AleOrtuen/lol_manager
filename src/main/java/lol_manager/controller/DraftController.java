@@ -166,7 +166,25 @@ public class DraftController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
-	
+
+	@GetMapping("/find-room/{id}")
+	public ResponseEntity<ResponseDTO> findByIdGame(@PathVariable String id) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(draftService.findOpenDraftByRoomId(id));
+			response.setResponse("Draft found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} catch (IllegalArgumentException i) {
+			LOGGER.error(i.getMessage(), i);
+			response.setResponse(i.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+
 	@PutMapping("/winner")
 	public ResponseEntity<ResponseDTO> setWinner(@RequestBody DraftDTO draftDto) {
 		ResponseDTO response = new ResponseDTO();

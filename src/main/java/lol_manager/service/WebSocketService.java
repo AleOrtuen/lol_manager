@@ -1,11 +1,12 @@
 package lol_manager.service;
 
+import java.time.Clock;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lol_manager.dto.DraftDTO;
 import lol_manager.dto.GameDTO;
-import lol_manager.enums.SideSelectionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,9 +20,12 @@ public class WebSocketService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    @Autowired
+    private DraftService draftService;
+
 	private static final long TIMER_DURATION_MS = 30_000;
 	private Map<String, Long> timers = new ConcurrentHashMap<>();
-//    private Map<String, WSMessageDTO> side = new ConcurrentHashMap<>();
+    private Map<Long, Set<String>> ready = new ConcurrentHashMap<>();
 
     public WSMessageDTO handlePick(String idRoom, WSMessageDTO message) {
 
@@ -58,7 +62,6 @@ public class WebSocketService {
         timers.entrySet().removeIf(entry -> now > entry.getValue() + TIMER_DURATION_MS + buffer);
     }
 
-
     public void notifyGameUpdate(String idRoom, GameDTO game) {
         WSMessageDTO updateMessage = new WSMessageDTO();
         updateMessage.setIdRoom(idRoom);
@@ -76,4 +79,30 @@ public class WebSocketService {
 
         messagingTemplate.convertAndSend("/topic/game/" + idRoom, updateMessage);
     }
+
+    public WSMessageDTO readyCheck(String idRoom, WSMessageDTO message) throws Exception {
+        Long draftId = message.getDraft().getIdDraft();
+        String sender = message.getSender();
+
+        ready.putIfAbsent(draftId, ConcurrentHashMap.newKeySet());
+        Set<String> readyPlayers = ready.get(draftId);
+        readyPlayers.add(sender);
+
+        WSMessageDTO returnMessage = new WSMessageDTO();
+        returnMessage.setIdRoom(idRoom);
+        returnMessage.setSender(sender);
+
+        if (readyPlayers.size() >= 2) {
+            ready.remove(draftId);
+            returnMessage.setType("READY_BOTH");
+            DraftDTO dto = message.getDraft();
+            dto.setReady(true);
+            returnMessage.setDraft(draftService.update(dto));
+        } else {
+            returnMessage.setType(sender + " READY");
+        }
+
+        return returnMessage;
+    }
+
 }

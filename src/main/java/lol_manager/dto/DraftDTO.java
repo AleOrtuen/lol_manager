@@ -8,6 +8,7 @@ public class DraftDTO {
 	private TeamDTO teamRed;
 	private TeamDTO winner;
 	private boolean closed;
+	private boolean ready;
 	
 	public Long getIdDraft() {
 		return idDraft;
@@ -45,6 +46,10 @@ public class DraftDTO {
 	public void setClosed(boolean closed) {
 		this.closed = closed;
 	}
-	
-	
+	public boolean isReady() {
+		return ready;
+	}
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
 }

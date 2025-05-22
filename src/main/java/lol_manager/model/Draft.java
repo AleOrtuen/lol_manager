@@ -36,6 +36,9 @@ public class Draft {
     
     @Column(name = "closed")
 	private boolean closed;
+
+	@Column(name ="ready")
+	private boolean ready;
     
     public Draft() {
     	
@@ -94,6 +97,12 @@ public class Draft {
 	public void setClosed(boolean closed) {
 		this.closed = closed;
 	}
-    
 
+	public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
 }

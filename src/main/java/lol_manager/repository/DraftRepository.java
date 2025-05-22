@@ -32,4 +32,10 @@ public interface DraftRepository extends JpaRepository<Draft, Long> {
     	""")
     public List<Champion> findAvailableChampionsByDraftId(@Param("idDraft") Long idDraft);
 
+	@Query("SELECT d FROM Draft d " +
+			"JOIN d.game g " +
+			"JOIN GameRoom gr ON gr.game = g " +
+			"WHERE gr.idRoom = :idRoom AND d.closed = false")
+	public Draft findOpenDraftByRoomId(@Param("idRoom") String idRoom);
+
 }
