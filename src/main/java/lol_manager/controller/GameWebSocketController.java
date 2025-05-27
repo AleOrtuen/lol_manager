@@ -28,6 +28,10 @@ public class GameWebSocketController {
 	            return webSocketService.startTimer(idRoom);
 	        case "TIMER_STATUS_REQUEST":
 	        	return webSocketService.getCurrentTimer(idRoom);
+			case "EVENT":
+				return webSocketService.draftEventsHandler(idRoom);
+			case "CURRENT_EVENT_REQUEST":
+				return webSocketService.getCurrentDraftEvent(idRoom);
 	        default:
 	            throw new IllegalArgumentException("Unknown action type: " + message.getType());
 	    }

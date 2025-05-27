@@ -10,6 +10,7 @@ public class WSMessageDTO {
 	private Long startTime;
 	private GameDTO game;
 	private DraftDTO draft;
+	private DraftEventsDTO events;
 
 	public String getIdRoom() {
 		return idRoom;
@@ -58,5 +59,11 @@ public class WSMessageDTO {
 	}
 	public void setDraft(DraftDTO draft) {
 		this.draft = draft;
+	}
+	public DraftEventsDTO getEvents() {
+		return events;
+	}
+	public void setEvents(DraftEventsDTO events) {
+		this.events = events;
 	}
 }
