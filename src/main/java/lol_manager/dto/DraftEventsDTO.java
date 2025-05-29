@@ -29,6 +29,7 @@ public class DraftEventsDTO {
         events.put("bluePick4", false);
         events.put("bluePick5", false);
         events.put("redPick5", false);
+        events.put("end", false);
     }
 
     public Map<String, Boolean> getEvents() {

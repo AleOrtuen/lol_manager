@@ -1,6 +1,5 @@
 package lol_manager.service;
 
-import java.time.Clock;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +26,8 @@ public class WebSocketService {
 
 	private static final long TIMER_DURATION_MS = 30_000;
     private static final long READY_DURATION_MS = 180_000;
-	private Map<String, Long> timers = new ConcurrentHashMap<>();
+    private static final long BUFFER_MS = 1000;
+    private Map<String, Map<String, Long>> timers = new ConcurrentHashMap<>();
     private Map<Long, Set<String>> ready = new ConcurrentHashMap<>();
     private Map<Long, Long> readyTimeOut = new ConcurrentHashMap<>();
     private Map<String, DraftEventsDTO> draftEvents = new ConcurrentHashMap<>();
@@ -38,9 +38,22 @@ public class WebSocketService {
         return message;
     }
 
+    // INITIALIZE TIMER PER PHASE
     public WSMessageDTO startTimer(String idRoom) {
-        long startTime = System.currentTimeMillis();
-        timers.put(idRoom, startTime);
+        DraftEventsDTO events = draftEvents.get(idRoom);
+        if (events == null || events.getCurrentPhase() == null) return null;
+
+        String phase = events.getCurrentPhase();
+
+        timers.putIfAbsent(idRoom, new ConcurrentHashMap<>());
+        Map<String, Long> roomTimers = timers.get(idRoom);
+
+        roomTimers.computeIfAbsent(phase, k -> {
+            long now = System.currentTimeMillis();
+            return now;
+        });
+
+        Long startTime = roomTimers.get(phase);
 
         WSMessageDTO timerMsg = new WSMessageDTO();
         timerMsg.setType("TIMER_START");
@@ -49,9 +62,16 @@ public class WebSocketService {
         return timerMsg;
     }
 
+    // RETRIEVE TIMER PER ROOM
     public WSMessageDTO getCurrentTimer(String idRoom) {
-        Long startTime = timers.get(idRoom);
-        if (startTime == null) return null;
+        DraftEventsDTO events = draftEvents.get(idRoom);
+        if (events == null || events.getCurrentPhase() == null) return null;
+
+        String phase = events.getCurrentPhase();
+        Map<String, Long> roomTimers = timers.get(idRoom);
+        if (roomTimers == null || !roomTimers.containsKey(phase)) return null;
+
+        Long startTime = roomTimers.get(phase);
 
         WSMessageDTO timerMsg = new WSMessageDTO();
         timerMsg.setType("TIMER_START");
@@ -59,12 +79,36 @@ public class WebSocketService {
         timerMsg.setStartTime(startTime);
         return timerMsg;
     }
-    
-    @Scheduled(fixedRate = 60_000) 
-    public void clearExpiredTimers() {
+
+    // AUTO-CHECK ENDED TIMERS CALL EVENT CHANGE
+    @Scheduled(fixedRate = 1000)
+    public void checkTimers() {
         long now = System.currentTimeMillis();
-        long buffer = 5000; 
-        timers.entrySet().removeIf(entry -> now > entry.getValue() + TIMER_DURATION_MS + buffer);
+
+        for (Map.Entry<String, DraftEventsDTO> entry : draftEvents.entrySet()) {
+            String idRoom = entry.getKey();
+            DraftEventsDTO events = entry.getValue();
+            String currentPhase = events.getCurrentPhase();
+
+            if (currentPhase == null) continue;
+
+            Map<String, Long> roomTimers = timers.get(idRoom);
+            if (roomTimers == null || !roomTimers.containsKey(currentPhase)) continue;
+
+            Long startTime = roomTimers.get(currentPhase);
+            if (startTime == null) continue;
+
+            if (now >= startTime + TIMER_DURATION_MS) {
+                WSMessageDTO eventChange = draftEventsHandler(idRoom);
+                messagingTemplate.convertAndSend("/topic/game/" + idRoom, eventChange);
+
+                roomTimers.remove(currentPhase);
+
+                if (roomTimers.isEmpty()) {
+                    timers.remove(idRoom);
+                }
+            }
+        }
     }
 
     // NOTIFY TO SUBSCRIBED CLIENTS WHEN A GAME IS UPDATED
@@ -146,8 +190,10 @@ public class WebSocketService {
         for (String phase : eventsDTO.getEvents().keySet()) {
             if (foundCurrent) {
                 eventsDTO.activatePhase(phase);
-                if (phase.equals("redPick5")) {
+                startTimer(idRoom);
+                if (phase.equals("end")) {
                     draftEvents.remove(idRoom);
+                    timers.remove(idRoom);
                 }
                 break;
             }
@@ -168,7 +214,6 @@ public class WebSocketService {
         returnMessage.setIdRoom(idRoom);
         returnMessage.setType("CURRENT_EVENT");
         returnMessage.setEvents(draftEvents.get(idRoom));
-        System.out.println("ciao ricevo");
         return returnMessage;
     }
 
