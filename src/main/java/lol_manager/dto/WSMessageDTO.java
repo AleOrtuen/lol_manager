@@ -1,10 +1,12 @@
 package lol_manager.dto;
 
+import lol_manager.model.Champion;
+
 public class WSMessageDTO {
 
 	private String idRoom;
 	private String side;
-	private Long idChamp;
+	private ChampDTO champion;
 	private String type;
 	private String sender;
 	private Long startTime;
@@ -24,11 +26,11 @@ public class WSMessageDTO {
 	public void setSide(String side) {
 		this.side = side;
 	}
-	public Long getIdChamp() {
-		return idChamp;
+	public ChampDTO getChampion() {
+		return champion;
 	}
-	public void setIdChamp(Long idChamp) {
-		this.idChamp = idChamp;
+	public void setChampion(ChampDTO champion) {
+		this.champion = champion;
 	}
 	public String getType() {
 		return type;

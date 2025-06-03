@@ -22,6 +22,9 @@ public class GameWebSocketController {
 	    switch (message.getType()) {
 	        case "PICK":
 	            return webSocketService.handlePick(idRoom, message);
+			case "LOCK":
+				webSocketService.lockSelectedChampion(idRoom, message.getEvents().getCurrentPhase());
+				return null;
 	        case "READY_CHECK":
 	            return webSocketService.readyCheck(idRoom, message);
 	        case "TIMER_REQUEST":

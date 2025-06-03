@@ -5,15 +5,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import lol_manager.dto.DraftDTO;
-import lol_manager.dto.DraftEventsDTO;
-import lol_manager.dto.GameDTO;
+import lol_manager.dto.*;
+import lol_manager.model.Ban;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import lol_manager.dto.WSMessageDTO;
 
 @Service
 public class WebSocketService {
@@ -24,18 +21,62 @@ public class WebSocketService {
     @Autowired
     private DraftService draftService;
 
-	private static final long TIMER_DURATION_MS = 30_000;
+    @Autowired
+    private BanService banService;
+
+    private static final long TIMER_DURATION_MS = 30_000;
     private static final long READY_DURATION_MS = 180_000;
     private static final long BUFFER_MS = 1000;
     private Map<String, Map<String, Long>> timers = new ConcurrentHashMap<>();
     private Map<Long, Set<String>> ready = new ConcurrentHashMap<>();
     private Map<Long, Long> readyTimeOut = new ConcurrentHashMap<>();
     private Map<String, DraftEventsDTO> draftEvents = new ConcurrentHashMap<>();
+    private Map<String, Map<String, ChampDTO>> selectedChampions = new ConcurrentHashMap<>();
+
+
 
     public WSMessageDTO handlePick(String idRoom, WSMessageDTO message) {
+        String phase = draftEvents.get(idRoom).getCurrentPhase();
+        selectedChampions
+                .computeIfAbsent(idRoom, k -> new ConcurrentHashMap<>())
+                .put(phase, message.getChampion());
 
-    	
-        return message;
+        WSMessageDTO returnMessage = new WSMessageDTO();
+        returnMessage.setType("SELECTED_CHAMP");
+        returnMessage.setIdRoom(idRoom);
+        returnMessage.setEvents(message.getEvents());
+        returnMessage.setSender(message.getSender());
+        returnMessage.setChampion(message.getChampion());
+
+        return returnMessage;
+    }
+
+    public void lockSelectedChampion(String idRoom, String phase) throws Exception {
+        DraftEventsDTO events = draftEvents.computeIfAbsent(idRoom, key -> {
+            DraftEventsDTO e = new DraftEventsDTO();
+            e.activatePhase(phase);
+            return e;
+        });
+        Map<String, ChampDTO> phasePick = selectedChampions.get(idRoom);
+        if (phasePick != null) {
+            ChampDTO champ = phasePick.get(phase);
+            if (champ != null) {
+                WSMessageDTO returnMessage = new WSMessageDTO();
+                returnMessage.setType("LOCKED_CHAMP");
+                returnMessage.setIdRoom(idRoom);
+                returnMessage.setChampion(champ);
+                returnMessage.setEvents(events);
+                messagingTemplate.convertAndSend("/topic/game/" + idRoom, returnMessage);
+
+                DraftDTO draft = draftService.findOpenDraftByRoomId(idRoom);
+
+//                Ban ban = new Ban(draft,);
+//                banService.save();
+                selectedChampions.remove(idRoom);
+            }
+        }
+        WSMessageDTO eventChange = draftEventsHandler(idRoom);
+        messagingTemplate.convertAndSend("/topic/game/" + idRoom, eventChange);
     }
 
     // INITIALIZE TIMER PER PHASE
@@ -82,7 +123,7 @@ public class WebSocketService {
 
     // AUTO-CHECK ENDED TIMERS CALL EVENT CHANGE
     @Scheduled(fixedRate = 1000)
-    public void checkTimers() {
+    public void checkTimers() throws Exception {
         long now = System.currentTimeMillis();
 
         for (Map.Entry<String, DraftEventsDTO> entry : draftEvents.entrySet()) {
@@ -99,9 +140,7 @@ public class WebSocketService {
             if (startTime == null) continue;
 
             if (now >= startTime + TIMER_DURATION_MS) {
-                WSMessageDTO eventChange = draftEventsHandler(idRoom);
-                messagingTemplate.convertAndSend("/topic/game/" + idRoom, eventChange);
-
+                lockSelectedChampion(idRoom, currentPhase);
                 roomTimers.remove(currentPhase);
 
                 if (roomTimers.isEmpty()) {
