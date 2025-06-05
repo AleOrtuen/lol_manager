@@ -24,6 +24,9 @@ public class WebSocketService {
     @Autowired
     private BanService banService;
 
+    @Autowired
+    private PickService pickService;
+
     private static final long TIMER_DURATION_MS = 30_000;
     private static final long READY_DURATION_MS = 180_000;
     private static final long BUFFER_MS = 1000;
@@ -34,7 +37,7 @@ public class WebSocketService {
     private Map<String, Map<String, ChampDTO>> selectedChampions = new ConcurrentHashMap<>();
 
 
-
+    // HANDLE THE CHANGE OF PICKS NOT YET LOCKED
     public WSMessageDTO handlePick(String idRoom, WSMessageDTO message) {
         String phase = draftEvents.get(idRoom).getCurrentPhase();
         selectedChampions
@@ -51,6 +54,7 @@ public class WebSocketService {
         return returnMessage;
     }
 
+    // METHOD TO EITHER LOCK BANS OR PICKS
     public void lockSelectedChampion(String idRoom, String phase) throws Exception {
         DraftEventsDTO events = draftEvents.computeIfAbsent(idRoom, key -> {
             DraftEventsDTO e = new DraftEventsDTO();
@@ -61,17 +65,34 @@ public class WebSocketService {
         if (phasePick != null) {
             ChampDTO champ = phasePick.get(phase);
             if (champ != null) {
+
+                String side = events.getCurrentPhase().contains("blue") ? "blue" : "red";
+                DraftDTO draft = draftService.findOpenDraftByRoomId(idRoom);
+
                 WSMessageDTO returnMessage = new WSMessageDTO();
-                returnMessage.setType("LOCKED_CHAMP");
                 returnMessage.setIdRoom(idRoom);
                 returnMessage.setChampion(champ);
                 returnMessage.setEvents(events);
+                returnMessage.setSide(side);
+
+                if (events.getCurrentPhase().contains("Ban")) {
+                    returnMessage.setType("CHAMP_BAN");
+                    BanDTO ban = new BanDTO();
+                    ban.setBan(champ);
+                    ban.setSide(side);
+                    ban.setDraft(draft);
+                    banService.save(ban);
+                }
+                if (events.getCurrentPhase().contains("Pick")) {
+                    returnMessage.setType("CHAMP_PICK");
+                    PickDTO pick = new PickDTO();
+                    pick.setPick(champ);
+                    pick.setSide(side);
+                    pick.setDraft(draft);
+                    pickService.save(pick);
+                }
+
                 messagingTemplate.convertAndSend("/topic/game/" + idRoom, returnMessage);
-
-                DraftDTO draft = draftService.findOpenDraftByRoomId(idRoom);
-
-//                Ban ban = new Ban(draft,);
-//                banService.save();
                 selectedChampions.remove(idRoom);
             }
         }
