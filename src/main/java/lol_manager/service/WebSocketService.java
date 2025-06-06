@@ -250,7 +250,7 @@ public class WebSocketService {
         for (String phase : eventsDTO.getEvents().keySet()) {
             if (foundCurrent) {
                 eventsDTO.activatePhase(phase);
-                startTimer(idRoom);
+                    startTimer(idRoom);
                 if (phase.equals("end")) {
                     draftEvents.remove(idRoom);
                     timers.remove(idRoom);
