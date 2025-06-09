@@ -14,4 +14,5 @@ public class MapperManager {
 	public static final BanMapper BANMAPPER = new BanMapper();
 	public static final PickMapper PICKMAPPER = new PickMapper();
 	public static final GameRoomMapper GAMEROOMMAPPER = new GameRoomMapper();
+	public static final LeagueRoleMapper LEAGUEROLEMAPPER = new LeagueRoleMapper();
 }
