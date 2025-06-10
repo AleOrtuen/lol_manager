@@ -23,7 +23,7 @@ public class TeamCompService {
 	private TeamService teamService;
 
 	public TeamCompDTO save(TeamCompDTO t) throws Exception {
-		Assert.isTrue(Validations.validTeamComp(t), "Invalid form");
+		Assert.isTrue(Validations.isValidTeamComp(t), "Invalid form");
 		teamService.findById(t.getTeam().getIdTeam());
 		TeamComp teamComp = MapperManager.TEAMCOMPMAPPER.entityFromDto(t);
 		return MapperManager.TEAMCOMPMAPPER.dtoFromEntity(teamCompRepository.save(teamComp));
@@ -31,7 +31,7 @@ public class TeamCompService {
 	
 	public TeamCompDTO update(TeamCompDTO t) throws Exception {
 		findById(t.getIdComp());
-		Assert.isTrue(Validations.validTeamComp(t), "Invalid form");
+		Assert.isTrue(Validations.isValidTeamComp(t), "Invalid form");
 		teamService.findById(t.getTeam().getIdTeam());
 		TeamComp comp = MapperManager.TEAMCOMPMAPPER.entityFromDto(t);
 		return MapperManager.TEAMCOMPMAPPER.dtoFromEntity(teamCompRepository.save(comp));

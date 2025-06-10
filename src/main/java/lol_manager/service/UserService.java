@@ -26,7 +26,7 @@ public class UserService {
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 	
 	public UserDTO save(UserDTO u) throws Exception {
-		Assert.isTrue(Validations.validFormUtente(u), "Invalid form");
+		Assert.isTrue(Validations.isValidFormUser(u), "Invalid form");
 		Assert.isTrue(userRepository.findByEmail(u.getEmail()) == null, "Email registered");
 		User user = MapperManager.USERMAPPER.entityFromDto(u);
 		user.setPassword(encoder.encode(user.getPassword()));
@@ -39,7 +39,7 @@ public class UserService {
 		User user = MapperManager.USERMAPPER.entityFromDto(u);
 		User entity = new User();
 		if (u.getPassword() == null) {
-			Assert.isTrue(Validations.validFormNoPassword(u), "Invalid form");
+			Assert.isTrue(Validations.isValidFormNoPassword(u), "Invalid form");
 			int update = userRepository.updateNoPassword(
 					user.getUsername(), 
 					user.getEmail(), 
@@ -51,7 +51,7 @@ public class UserService {
 				entity = MapperManager.USERMAPPER.entityFromDto(findById(user.getIdUser()));
 			};
 		} else {
-			Assert.isTrue(Validations.validFormUtente(u), "Invalid form");
+			Assert.isTrue(Validations.isValidFormUser(u), "Invalid form");
 			user.setPassword(encoder.encode(u.getPassword()));
 			entity = userRepository.save(user);
 		}

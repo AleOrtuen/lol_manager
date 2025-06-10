@@ -1,16 +1,6 @@
 package lol_manager.validation;
 
-import lol_manager.dto.BanDTO;
-import lol_manager.dto.ChampDTO;
-import lol_manager.dto.ChampPoolDTO;
-import lol_manager.dto.ChampRoleDTO;
-import lol_manager.dto.DraftDTO;
-import lol_manager.dto.GameDTO;
-import lol_manager.dto.PickDTO;
-import lol_manager.dto.TeamCompDTO;
-import lol_manager.dto.TeamDTO;
-import lol_manager.dto.TeamMemberDTO;
-import lol_manager.dto.UserDTO;
+import lol_manager.dto.*;
 import lol_manager.enums.ChampRoleEnum;
 import lol_manager.enums.GameEnum;
 import lol_manager.enums.SideSelectionEnum;
@@ -21,41 +11,41 @@ public class Validations {
 	private static final String PASSWORD_REGEX = "^(?=(.*[A-Z]))(?=(.*[a-z]))(?=(.*[0-9]))[A-Za-z0-9]{8,}$";   
 	
 	// VALIDAZIONE UTENTE
-	public static boolean validFormUtente(UserDTO user) {
+	public static boolean isValidFormUser(UserDTO user) {
 		boolean valid =
 				user.getEmail() != null 
-			 && validEmail(user.getEmail())
+			 && isValidEmail(user.getEmail())
 			 && user.getUsername() != null
-			 &&	validUsername(user.getUsername())
+			 &&	isValidUsername(user.getUsername())
 			 && user.getPassword() != null
-			 && validPassword(user.getPassword());
+			 && isValidPassword(user.getPassword());
 		return valid;
 	}
 	
-	public static boolean validFormNoPassword(UserDTO user) {
+	public static boolean isValidFormNoPassword(UserDTO user) {
 		boolean valid =
 				user.getEmail() != null 
-			 && validEmail(user.getEmail())
+			 && isValidEmail(user.getEmail())
 			 && user.getUsername() != null
-			 &&	validUsername(user.getUsername());
+			 &&	isValidUsername(user.getUsername());
 		return valid;
 	}
 	
-	public static boolean validUsername(String username) {
+	public static boolean isValidUsername(String username) {
 		boolean valid =
 				username.length() >= 3
 			 && username.length() <= 50;
 		return valid;
 	}
 	
-	public static boolean validEmail(String email) {
+	public static boolean isValidEmail(String email) {
 		boolean valid =
 				email.matches(EMAIL_REGEX)
 			 && email.length() <= 50;
 		return valid;
 	}
 	
-	public static boolean validPassword(String password) {
+	public static boolean isValidPassword(String password) {
 		boolean valid =
 				password.matches(PASSWORD_REGEX)
 			 && password.length() <= 100;
@@ -63,7 +53,7 @@ public class Validations {
 	}
 	
 	// VALIDAZIONE CHAMPIONS
-	public static boolean validChamp(ChampDTO c) {
+	public static boolean isValidChamp(ChampDTO c) {
 		boolean valid = 
 				c.getName() != null
 			&&	c.getImg() != null;
@@ -71,7 +61,7 @@ public class Validations {
 	}
 	
 	// VALIDAZIONE CHAMP_POOL
-	public static boolean validChampPool(ChampPoolDTO c) {
+	public static boolean isValidChampPool(ChampPoolDTO c) {
 		boolean valid =
 				c.getUser().getIdUser() != null
 			&&  c.getChampion().getIdChamp() != null;
@@ -79,7 +69,7 @@ public class Validations {
 	}
 	
 	//VALIDAZIONE TEAM_MEMBER
-	public static boolean validTeamMember(TeamMemberDTO t) {
+	public static boolean isValidTeamMember(TeamMemberDTO t) {
 		boolean valid =
 				t.getUser().getIdUser() != null
 			&&	t.getTeam().getIdTeam() != null;
@@ -87,7 +77,7 @@ public class Validations {
 	}
 	
 	// VALIDAZIONE TEAM
-	public static boolean validTeam(TeamDTO t) {
+	public static boolean isValidTeam(TeamDTO t) {
 		boolean valid =
 				t.getName() != null
 			&&  t.getName().length() >= 2
@@ -103,7 +93,7 @@ public class Validations {
 	}
 	
 	// VALIDAZIONE TEAM COMP
-	public static boolean validTeamComp(TeamCompDTO t) {
+	public static boolean isValidTeamComp(TeamCompDTO t) {
 		boolean valid = 
 				t.getTeam() != null
 			&&	t.getTeam().getIdTeam() != null
@@ -114,7 +104,7 @@ public class Validations {
 	}
 	
 	// VALIDAZIONE CHAMP ROLE
-	public static boolean validChampRole(ChampRoleDTO c) {
+	public static boolean isValidChampRole(ChampRoleDTO c) {
 	    boolean valid = false;
 
 	    try {
@@ -133,7 +123,7 @@ public class Validations {
 	}
 	
 	// VALIDAZIONE GAME
-	public static boolean validGame(GameDTO gameDto) {
+	public static boolean isValidGame(GameDTO gameDto) {
 		boolean valid = false;
 		
 		try {
@@ -148,7 +138,7 @@ public class Validations {
 	}
 	
 	// VALIDAZIONE DRAFT
-	public static boolean validDraft(DraftDTO draftDto) {
+	public static boolean isValidDraft(DraftDTO draftDto) {
 		boolean valid = false;
 		
 		valid = 
@@ -182,10 +172,22 @@ public class Validations {
 		try {
 			SideSelectionEnum side = SideSelectionEnum.valueOf(pickDto.getSide());
 			valid = 
-					pickDto.getDraft().getIdDraft() != null &&
-					side != null &&
-					pickDto.getPick().getIdChamp() != null
-					;
+					pickDto.getDraft().getIdDraft() != null
+					&& side != null
+					&& pickDto.getPick().getIdChamp() != null;
+		} catch (IllegalArgumentException e) {
+			valid = false;
+		}
+		return valid;
+	}
+
+	// VALIDAZIONE LEAGUE ROLE
+	public static boolean isValidLeagueRole(LeagueRoleDTO leagueRoleDto) {
+		boolean valid = false;
+
+		try {
+			ChampRoleEnum role = ChampRoleEnum.valueOf(leagueRoleDto.getRole());
+			valid = leagueRoleDto.getChamp().getIdChamp() != null && role != null;
 		} catch (IllegalArgumentException e) {
 			valid = false;
 		}

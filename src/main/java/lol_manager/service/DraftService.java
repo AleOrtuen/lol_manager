@@ -29,14 +29,14 @@ public class DraftService {
 	private GameRoomService gameRoomService;
 	
 	public DraftDTO save(DraftDTO draftDto) throws Exception {
-		Assert.isTrue(Validations.validDraft(draftDto), "Invalid draft form");
+		Assert.isTrue(Validations.isValidDraft(draftDto), "Invalid draft form");
 		Draft draft = MapperManager.DRAFTMAPPER.entityFromDto(draftDto);
 		gameService.findById(draftDto.getGame().getIdGame());
 		return MapperManager.DRAFTMAPPER.dtoFromEntity(draftRepository.save(draft));
 	}
 	
 	public DraftDTO update(DraftDTO draftDto) throws Exception {
-		Assert.isTrue(Validations.validDraft(draftDto), "Invalid draft form");
+		Assert.isTrue(Validations.isValidDraft(draftDto), "Invalid draft form");
 		findById(draftDto.getIdDraft());
 		Draft draft = MapperManager.DRAFTMAPPER.entityFromDto(draftDto);
 		teamService.findById(draft.getTeamBlue().getIdTeam());

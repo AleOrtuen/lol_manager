@@ -33,6 +33,7 @@ public class SecurityConfig {
                     "/ban/**",
                     "/pick/**",
                     "/game-room/**",
+                    "/league-role/**",
                     "/ws/**",            
                     "/topic/**",        
                     "/app/**"            

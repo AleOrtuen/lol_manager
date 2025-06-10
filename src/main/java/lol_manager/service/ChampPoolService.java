@@ -28,7 +28,7 @@ public class ChampPoolService {
 	
 	
 	public ChampPoolDTO save(ChampPoolDTO c) throws Exception {
-		Assert.isTrue(Validations.validChampPool(c), "Invalid form");
+		Assert.isTrue(Validations.isValidChampPool(c), "Invalid form");
 		userService.findById(c.getUser().getIdUser());
 		champService.findById(c.getChampion().getIdChamp());
 		ChampPool champPool = MapperManager.CHAMPPOOLMAPPER.entityFromDto(c);

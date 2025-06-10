@@ -30,7 +30,7 @@ public class ChampRoleService {
 	private ChampService champService;
 	
 	public ChampRoleDTO save(ChampRoleDTO c) throws Exception {
-		Assert.isTrue(Validations.validChampRole(c), "Invalid form");
+		Assert.isTrue(Validations.isValidChampRole(c), "Invalid form");
 		teamCompService.findById(c.getComp().getIdComp());
 		champService.findById(c.getChampion().getIdChamp());
 		ChampRole champRole = MapperManager.CHAMPROLEMAPPER.entityFromDto(c);
@@ -39,7 +39,7 @@ public class ChampRoleService {
 	
 	@Transactional
 	public ChampRoleDTO update(ChampRoleDTO c) throws Exception {
-		Assert.isTrue(Validations.validChampRole(c), "Invalid form");
+		Assert.isTrue(Validations.isValidChampRole(c), "Invalid form");
 		ChampRole entity = champRoleRepository.findById(c.getChampion().getIdChamp(), c.getComp().getIdComp(), c.getRole());
 		Assert.isTrue(entity != null, "Champ role not found");
 		entity.setDescr(c.getDescr());

@@ -63,8 +63,11 @@ public class DraftController {
 	public ResponseEntity<ResponseDTO> update(@RequestBody DraftDTO draftDto) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(draftService.update(draftDto));
+			DraftDTO draft = draftService.update(draftDto);
+			response.setObjResponse(draft);
 			response.setResponse("Draft updated");
+			GameRoomDTO gameRoomDTO = gameRoomService.findByIdGame(draft.getGame().getIdGame());
+			webSocketService.notifyDraftUpdate(gameRoomDTO.getIdRoom(), draft);
 			return ResponseEntity.status(HttpStatus.OK).body(response);			
 		} catch (IllegalArgumentException i) {
 	    	LOGGER.error(i.getMessage(), i);

@@ -27,7 +27,7 @@ public class TeamService {
 	private TeamRepository teamRepository;
 		
 	public TeamDTO save(TeamDTO t) throws Exception {
-		Assert.isTrue(Validations.validTeam(t), "Invalid form");
+		Assert.isTrue(Validations.isValidTeam(t), "Invalid form");
 		Team team = MapperManager.TEAMMAPPER.entityFromDto(t);
 		Assert.isTrue(teamRepository.findByName(t.getName()) == null, "Existing name");
 		Assert.isTrue(teamRepository.findByTag(t.getTag()) == null, "Existing tag");
@@ -36,7 +36,7 @@ public class TeamService {
 
 	public TeamDTO update(TeamDTO t) throws Exception {
 		findById(t.getIdTeam());
-		Assert.isTrue(Validations.validTeam(t), "Invalid form");
+		Assert.isTrue(Validations.isValidTeam(t), "Invalid form");
 		Team team = MapperManager.TEAMMAPPER.entityFromDto(t);
 		return MapperManager.TEAMMAPPER.dtoFromEntity(teamRepository.save(team));
 	}

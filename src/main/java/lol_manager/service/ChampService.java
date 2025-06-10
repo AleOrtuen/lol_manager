@@ -20,7 +20,7 @@ public class ChampService {
 	private ChampRepository champRepository;
 	
 	public ChampDTO save(ChampDTO c) throws Exception {
-		Assert.isTrue(Validations.validChamp(c), "Invalid form");
+		Assert.isTrue(Validations.isValidChamp(c), "Invalid form");
 		Champion champion = MapperManager.CHAMPMAPPER.entityFromDto(c);
 		Assert.isTrue(champRepository.findByName(c.getName()) == null, "Existing champ");
 		return MapperManager.CHAMPMAPPER.dtoFromEntity(champRepository.save(champion));
@@ -28,7 +28,7 @@ public class ChampService {
 	
 	public ChampDTO update(ChampDTO c) throws Exception {
 		findById(c.getIdChamp());
-		Assert.isTrue(Validations.validChamp(c), "Invalid form");
+		Assert.isTrue(Validations.isValidChamp(c), "Invalid form");
 		Champion champion = MapperManager.CHAMPMAPPER.entityFromDto(c);
 		return MapperManager.CHAMPMAPPER.dtoFromEntity(champRepository.save(champion));
 	}

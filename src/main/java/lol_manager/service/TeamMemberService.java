@@ -28,7 +28,7 @@ public class TeamMemberService {
 	
 	
 	public TeamMemberDTO save(TeamMemberDTO t) throws Exception {
-		Assert.isTrue(Validations.validTeamMember(t), "Invalid form");
+		Assert.isTrue(Validations.isValidTeamMember(t), "Invalid form");
 		teamService.findById(t.getTeam().getIdTeam());
 		userService.findById(t.getUser().getIdUser());
 		TeamMember teamMember = MapperManager.TEAMMEMBERMAPPER.entityFromDto(t);
