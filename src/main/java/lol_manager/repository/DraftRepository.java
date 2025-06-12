@@ -35,6 +35,12 @@ public interface DraftRepository extends JpaRepository<Draft, Long> {
 	@Query("SELECT d FROM Draft d " +
 			"JOIN d.game g " +
 			"JOIN GameRoom gr ON gr.game = g " +
+			"WHERE gr.idRoom = :idRoom")
+	public List<Draft> findDraftByRoomId(@Param("idRoom") String idRoom);
+
+	@Query("SELECT d FROM Draft d " +
+			"JOIN d.game g " +
+			"JOIN GameRoom gr ON gr.game = g " +
 			"WHERE gr.idRoom = :idRoom AND d.closed = false")
 	public Draft findOpenDraftByRoomId(@Param("idRoom") String idRoom);
 

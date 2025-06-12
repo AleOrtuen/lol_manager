@@ -174,7 +174,7 @@ public class DraftController {
 	public ResponseEntity<ResponseDTO> findByIdGame(@PathVariable String id) {
 		ResponseDTO response = new ResponseDTO();
 		try {
-			response.setObjResponse(draftService.findOpenDraftByRoomId(id));
+			response.setObjResponse(draftService.findDraftByRoomId(id));
 			response.setResponse("Draft found");
 			return ResponseEntity.status(HttpStatus.OK).body(response);
 		} catch (IllegalArgumentException i) {

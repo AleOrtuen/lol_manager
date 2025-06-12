@@ -75,6 +75,13 @@ public class DraftService {
 		return MapperManager.DRAFTMAPPER.dtoFromEntity(drafts);
 	}
 
+	public List<DraftDTO> findDraftByRoomId(String idRoom) throws Exception {
+		gameRoomService.findById(idRoom);
+		List<Draft> drafts = draftRepository.findDraftByRoomId(idRoom);
+		Assert.isTrue(drafts.size() != 0, "Drafts not found");
+		return MapperManager.DRAFTMAPPER.dtoFromEntity(drafts);
+	}
+
 	public DraftDTO findOpenDraftByRoomId(String idRoom) throws Exception {
 		gameRoomService.findById(idRoom);
 		Draft draft = draftRepository.findOpenDraftByRoomId(idRoom);

@@ -238,7 +238,7 @@ public class WebSocketService {
     }
 
     // DRAFT EVENTS SWITCH E NOTIFY CLIENTS
-    public WSMessageDTO draftEventsHandler(String idRoom) {
+    public WSMessageDTO draftEventsHandler(String idRoom) throws Exception {
         DraftEventsDTO eventsDTO = draftEvents.computeIfAbsent(idRoom, key -> {
             DraftEventsDTO newEvents = new DraftEventsDTO();
             newEvents.activatePhase("start");
@@ -252,6 +252,10 @@ public class WebSocketService {
                 eventsDTO.activatePhase(phase);
                     startTimer(idRoom);
                 if (phase.equals("end")) {
+                    DraftDTO draft = draftService.findOpenDraftByRoomId(idRoom);
+                    draft.setClosed(true);
+                    draftService.update(draft);
+                    notifyDraftUpdate(idRoom, draft);
                     draftEvents.remove(idRoom);
                     timers.remove(idRoom);
                 }
