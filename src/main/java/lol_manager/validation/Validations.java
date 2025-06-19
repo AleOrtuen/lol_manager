@@ -142,9 +142,9 @@ public class Validations {
 		boolean valid = false;
 		
 		valid = 
-				draftDto.getGame().getIdGame() != null &&
-				draftDto.getTeamBlue().getIdTeam() != null &&
-				draftDto.getTeamRed().getIdTeam() != null;
+				draftDto.getGame().getIdGame() != null;
+//						&& draftDto.getTeamBlue().getIdTeam() != null &&
+//				draftDto.getTeamRed().getIdTeam() != null;
 		return valid;
 	}
 	

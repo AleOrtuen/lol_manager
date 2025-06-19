@@ -79,7 +79,32 @@ public class DraftController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
-	
+
+	@PutMapping("/winner")
+	public ResponseEntity<ResponseDTO> setWinner(@RequestBody DraftDTO draftDto) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			DraftDTO draft = draftService.setWinner(draftDto);
+			response.setObjResponse(draft);
+			response.setResponse("Draft winner updated");
+			GameRoomDTO gameRoomDTO = gameRoomService.findByIdGame(draft.getGame().getIdGame());
+			webSocketService.notifyDraftUpdate(gameRoomDTO.getIdRoom(), draft);
+			DraftDTO newDraft = draftService.findOpenDraftByRoomId(gameRoomDTO.getIdRoom());
+			if (newDraft != null) {
+				webSocketService.notifyDraftUpdate(gameRoomDTO.getIdRoom(), newDraft);
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} catch (IllegalArgumentException i) {
+			LOGGER.error(i.getMessage(), i);
+			response.setResponse(i.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}	catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
 		ResponseDTO response = new ResponseDTO();
@@ -188,21 +213,4 @@ public class DraftController {
 		}
 	}
 
-	@PutMapping("/winner")
-	public ResponseEntity<ResponseDTO> setWinner(@RequestBody DraftDTO draftDto) {
-		ResponseDTO response = new ResponseDTO();
-		try {
-			response.setObjResponse(draftService.setWinner(draftDto));
-			response.setResponse("Draft winner updated");
-			return ResponseEntity.status(HttpStatus.OK).body(response);			
-		} catch (IllegalArgumentException i) {
-	    	LOGGER.error(i.getMessage(), i);
-	    	response.setResponse(i.getMessage());
-	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	    	
-		}	catch (Exception e) {
-	    	LOGGER.error(e.getMessage(), e);
-			response.setResponse(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		}
-	}
 }
