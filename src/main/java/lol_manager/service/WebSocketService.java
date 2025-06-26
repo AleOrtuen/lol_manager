@@ -258,6 +258,7 @@ public class WebSocketService {
                     notifyDraftUpdate(idRoom, draft);
                     draftEvents.remove(idRoom);
                     timers.remove(idRoom);
+                    selectedChampions.remove(idRoom);
                 }
                 break;
             }
@@ -281,4 +282,16 @@ public class WebSocketService {
         return returnMessage;
     }
 
+
+//    @Scheduled(fixedRate = 60_000)
+//    public void logs() {
+//        selectedChampions.forEach((key, value) -> {
+//            System.out.println("Chiave: " + key + ", Valore: " + value);
+//        });
+//
+//        draftEvents.forEach((key, value) -> {
+//            System.out.println("Chiave: " + key + ", Valore: " + value);
+//        });
+//
+//    }
 }

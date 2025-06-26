@@ -13,5 +13,8 @@ public interface PickRepository extends JpaRepository<Pick, Long> {
 	public List<Pick> findBySide(String side);
 	
 	public List<Pick> findByPickIdChamp(Long idChamp);
+
+	public List<Pick> findByDraftGameIdGame(Long idGame);
+
 	
 }

@@ -85,9 +85,6 @@ public class Validations {
 			&&  t.getTag() != null
 			&&  t.getTag().length() >= 2
 			&&  t.getTag().length() <= 5
-//			&&  t.getImg() != null
-//			&&  t.getImg().length() >= 5
-//			&&  t.getImg().length() <= 50
 			;
 		return valid;
 	}

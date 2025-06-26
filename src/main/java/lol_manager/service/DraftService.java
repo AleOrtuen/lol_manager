@@ -7,7 +7,9 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.transaction.Transactional;
+import lol_manager.dto.GameDTO;
 import lol_manager.dto.GameRoomDTO;
+import lol_manager.dto.TeamDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -97,6 +99,19 @@ public class DraftService {
 			DraftDTO newDraft = new DraftDTO();
 			newDraft.setGame(draftDto.getGame());
 			save(newDraft);
+		} else {
+			Map.Entry<Long, Integer> maxEntry = wins.entrySet().stream()
+					.max(Map.Entry.comparingByValue())
+					.orElse(null);
+
+			if (maxEntry != null) {
+				Long winningTeamId = maxEntry.getKey();
+				GameDTO gameDto = draftDto.getGame();
+				TeamDTO winnerTeam = teamService.findById(winningTeamId);
+				gameDto.setWinner(winnerTeam);
+				gameService.setWinner(gameDto);
+			}
+
 		}
 
 		return winner;
