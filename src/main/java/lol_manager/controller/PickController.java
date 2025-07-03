@@ -191,4 +191,21 @@ public class PickController {
 		}
 	}
 
+	@GetMapping("/find-team/{id}")
+	public ResponseEntity<ResponseDTO> findByIdTeam(@PathVariable Long id) {
+		ResponseDTO response = new ResponseDTO();
+		try {
+			response.setObjResponse(pickService.findByIdTeam(id));
+			response.setResponse("Picks found");
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} catch (IllegalArgumentException i) {
+			LOGGER.error(i.getMessage(), i);
+			response.setResponse(i.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			response.setResponse(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
 }

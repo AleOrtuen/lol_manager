@@ -28,7 +28,9 @@ public class PickService {
 
 	@Autowired
 	private GameService	gameService;
-	
+    @Autowired
+    private TeamService teamService;
+
 	public PickDTO save(PickDTO pickDto) throws Exception {
 		Assert.isTrue(Validations.isValidPick(pickDto), "Invalid pick form");
 		draftService.findById(pickDto.getDraft().getIdDraft());
@@ -90,4 +92,19 @@ public class PickService {
 		Assert.isTrue(picks.size() != 0 , "No picks found");
 		return MapperManager.PICKMAPPER.dtoFromEntity(picks);
 	}
+
+	public List<PickDTO> findByIdTeam(Long idTeam) throws Exception {
+		teamService.findById(idTeam);
+		List<Pick> picks = pickRepository.findAllPicksByIdTeam(idTeam);
+		Assert.isTrue(picks.size() != 0 , "No picks found");
+		return MapperManager.PICKMAPPER.dtoFromEntity(picks);
+	}
+
+	public List<PickDTO> findChosenByIdTeam(Long idTeam) throws Exception {
+		teamService.findById(idTeam);
+		List<Pick> picks = pickRepository.findChosenPicksByIdTeam(idTeam);
+		Assert.isTrue(picks.size() != 0 , "No picks found");
+		return MapperManager.PICKMAPPER.dtoFromEntity(picks);
+	}
+
 }

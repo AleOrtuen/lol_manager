@@ -1,5 +1,7 @@
 package lol_manager.dto;
 
+import java.util.Objects;
+
 public class DraftDTO {
 
 	private Long idDraft;
@@ -51,5 +53,18 @@ public class DraftDTO {
 	}
 	public void setReady(boolean ready) {
 		this.ready = ready;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		DraftDTO draftDTO = (DraftDTO) o;
+		return closed == draftDTO.closed && ready == draftDTO.ready && Objects.equals(idDraft, draftDTO.idDraft) && Objects.equals(game, draftDTO.game) && Objects.equals(teamBlue, draftDTO.teamBlue) && Objects.equals(teamRed, draftDTO.teamRed) && Objects.equals(winner, draftDTO.winner);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(idDraft, game, teamBlue, teamRed, winner, closed, ready);
 	}
 }

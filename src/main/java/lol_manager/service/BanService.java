@@ -3,6 +3,8 @@ package lol_manager.service;
 import java.util.List;
 import java.util.Optional;
 
+import lol_manager.dto.PickDTO;
+import lol_manager.model.Pick;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -25,6 +27,9 @@ public class BanService {
 	
 	@Autowired
 	private ChampService champService;
+
+	@Autowired
+	private TeamService teamService;
 	
 	public BanDTO save(BanDTO banDto) throws Exception {
 		Assert.isTrue(Validations.isValidBan(banDto), "Invalid ban form");
@@ -78,6 +83,13 @@ public class BanService {
 		champService.findById(idChamp);
 		List<Ban> bans = banRepository.findByBanIdChamp(idChamp);
 		Assert.isTrue(bans.size() != 0 , "No bans found");
+		return MapperManager.BANMAPPER.dtoFromEntity(bans);
+	}
+
+	public List<BanDTO> findByIdTeam(Long idTeam) throws Exception {
+		teamService.findById(idTeam);
+		List<Ban> bans = banRepository.findAllBansByTeamId(idTeam);
+		Assert.isTrue(bans.size() != 0 , "No picks found");
 		return MapperManager.BANMAPPER.dtoFromEntity(bans);
 	}
 }

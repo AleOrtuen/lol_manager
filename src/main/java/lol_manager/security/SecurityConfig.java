@@ -36,7 +36,8 @@ public class SecurityConfig {
                     "/league-role/**",
                     "/ws/**",            
                     "/topic/**",        
-                    "/app/**"            
+                    "/app/**",
+                    "/team-analysis/**"
                 ).permitAll();
                 auth.anyRequest().authenticated();
             })
