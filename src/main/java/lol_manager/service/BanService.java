@@ -88,8 +88,8 @@ public class BanService {
 
 	public List<BanDTO> findByIdTeam(Long idTeam) throws Exception {
 		teamService.findById(idTeam);
-		List<Ban> bans = banRepository.findAllBansByTeamId(idTeam);
-		Assert.isTrue(bans.size() != 0 , "No picks found");
+		List<Ban> bans = banRepository.findAllBansByIdTeam(idTeam);
+		Assert.isTrue(bans.size() != 0 , "No bans found");
 		return MapperManager.BANMAPPER.dtoFromEntity(bans);
 	}
 }

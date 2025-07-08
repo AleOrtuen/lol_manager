@@ -18,7 +18,7 @@ public interface BanRepository extends JpaRepository<Ban, Long> {
 	public List<Ban> findByBanIdChamp(Long idChamp);
 
 	@Query("SELECT b FROM Ban b JOIN b.draft d " +
-			"WHERE d.teamBlue.idTeam = :teamId OR d.teamRed.idTeam = :teamId")
-	List<Ban> findAllBansByTeamId(@Param("teamId") Long teamId);
+			"WHERE d.teamBlue.idTeam = :idTeam OR d.teamRed.idTeam = :idTeam")
+	List<Ban> findAllBansByIdTeam(@Param("idTeam") Long idTeam);
 
 }
